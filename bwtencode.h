@@ -6,4 +6,7 @@ std::vector<bool> generateSLVector(const char*);
 
 int main(int, char**);
 
+// Debugging
+void printSLVector(std::vector<bool>);
+
 #endif

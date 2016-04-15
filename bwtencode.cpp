@@ -63,3 +63,11 @@ int main(int argc, char** argv){
 
     return 0;
 }
+
+// Debugging
+void printSLVector(std::vector<bool> vector){
+    for (int i = 0; i < vector.size(); i++){
+        std::cout << vector[i] << " ";
+    }
+    std::cout << std::endl;
+}
