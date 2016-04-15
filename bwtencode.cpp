@@ -25,7 +25,7 @@ std::vector<bool> generateSLVector(const char* filename){
     char c;
     char lastC;
     unsigned char slStatus;
-    unsigned int offset = 1;
+    unsigned int offset = 0;
     unsigned int position;
     in.get(lastC);
 
@@ -34,9 +34,10 @@ std::vector<bool> generateSLVector(const char* filename){
         position = in.tellg();
         if (c != lastC){
             slStatus = ((unsigned char) lastC < (unsigned char) c);
-            slVector[position-1] = slStatus;
-            while (offset > 1){
-                slVector[position-offset] = slStatus;
+            // Built-in offset of 2 because stream position is 2 ahead of lastC
+            slVector[position-2] = slStatus;
+            while (offset){
+                slVector[position-offset-2] = slStatus;
                 offset--;
             }
         } else {
@@ -46,10 +47,11 @@ std::vector<bool> generateSLVector(const char* filename){
         lastC = c;
     }
 
-    while (offset){
-        slVector[position-offset] = 1;
+    while (offset > 1){
+        slVector[position-offset] = 0;
         offset--;
     }
+    slVector[position-1] = 1;
 
     return slVector;
 }
