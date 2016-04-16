@@ -32,6 +32,7 @@ class BucketSorter {
         Bucket* head;
     public:
         BucketSorter();
+        ~BucketSorter();
 
         void bucket(unsigned char, unsigned int);
 };

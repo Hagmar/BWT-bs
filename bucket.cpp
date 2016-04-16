@@ -20,8 +20,28 @@ void BucketSorter::Bucket::Construct(unsigned char c){
     next = 0;
 }
 
+BucketSorter::Bucket::~Bucket(){
+    Node* n;
+
+    while (head){
+        n = head->next;
+        delete head;
+        head = n;
+    }
+}
+
 BucketSorter::BucketSorter(){
     head = 0;
+}
+
+BucketSorter::~BucketSorter(){
+    Bucket* b;
+
+    while (head){
+        b = head->next;
+        delete head;
+        head = b;
+    }
 }
 
 void BucketSorter::Bucket::insert(unsigned int element){
