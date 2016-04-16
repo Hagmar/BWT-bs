@@ -13,17 +13,18 @@ void encode(const char* filename){
         std::vector<bool> slVector = generateSLVector(in);
         in.seekg(0, in.beg);
         printSLVector(slVector);
+
+        BucketSorter* bs = new BucketSorter();
+        sortCharacters(bs, in);
     }
     in.close();
 }
 
 std::vector<bool> generateSLVector(std::istream& in){
     unsigned int filesize = in.tellg();
-
-    // Reset stream position to start of file
     std::vector<bool> slVector(filesize);
-    in.seekg(0, in.beg);
 
+    in.seekg(0, in.beg);
     populateSLVector(&slVector, in);
 
     return slVector;
@@ -61,6 +62,16 @@ void populateSLVector(std::vector<bool>* slVectorPtr, std::istream& in){
         offset--;
     }
     slVector[position-1] = 1;
+}
+
+void sortCharacters(BucketSorter* bs, std::istream& in){
+    char c;
+    unsigned int index;
+
+    while (in.get(c)){
+        index = in.tellg();
+        bs->bucket((unsigned char) c, index);
+    }
 }
 
 int main(int argc, char** argv){

@@ -9,7 +9,6 @@ class BucketSorter {
                 Node* next;
 
                 Node(unsigned int);
-                ~Node();
         };
 
         public:
