@@ -24,6 +24,9 @@ class BucketSorter {
             Bucket(unsigned char);
             ~Bucket();
 
+            // Debugging
+            void print();
+
         private:
             void Construct(unsigned char);
     };
@@ -34,6 +37,9 @@ class BucketSorter {
         ~BucketSorter();
 
         void bucket(unsigned char, unsigned int);
+
+        // Debugging
+        void print();
 };
 
 #endif

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "bucket.h"
 
 BucketSorter::Bucket::Node::Node(unsigned int n){
@@ -61,6 +62,9 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
         head = new Bucket(c);
         head->insert(index);
         return;
+    } else if (head->character == c){
+        head->insert(index);
+        return;
     } else if (head->character > c){
         Bucket* newBucket = new Bucket(c);
         newBucket->insert(index);
@@ -72,7 +76,7 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
 
     // Find the bucket preceeding the correct one for c
     while (b->next){
-        if (b->next->character > c){
+        if (b->next->character >= c){
             break;
         } else {
             b = b->next;
@@ -94,4 +98,25 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
     }
 
     b->insert(index);
+}
+
+// Debugging
+void BucketSorter::Bucket::print(){
+    Node* n = head;
+
+    std::cout << "Bucket: " << character << std::endl;
+    while (n){
+        std::cout << n->num << " ";
+        n = n->next;
+    }
+    std::cout << std::endl;
+}
+
+void BucketSorter::print(){
+    Bucket* b = head;
+    
+    while (b){
+        b->print();
+        b = b->next;
+    }
 }
