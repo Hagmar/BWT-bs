@@ -5,19 +5,19 @@
 #include "bucket.h"
 
 void encode(const char* filename){
-    std::ifstream in(filename);
+    std::ifstream in(filename, std::ifstream::ate);
 
     if (!in.is_open()){
         std::cerr << "Error: cannot open file " << filename << std::endl;
     } else {
-        std::vector<bool> slVector = generateSLVector(filename);
+        std::vector<bool> slVector = generateSLVector(in);
+        in.seekg(0, in.beg);
         printSLVector(slVector);
     }
     in.close();
 }
 
-std::vector<bool> generateSLVector(const char* filename){
-    std::ifstream in(filename, std::ifstream::ate);
+std::vector<bool> generateSLVector(std::istream& in){
     unsigned int filesize = in.tellg();
 
     // Reset stream position to start of file
