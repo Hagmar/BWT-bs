@@ -11,11 +11,13 @@ void encode(const char* filename){
         std::cerr << "Error: cannot open file " << filename << std::endl;
     } else {
         std::vector<bool> slVector = generateSLVector(in);
+        in.clear();
         in.seekg(0, in.beg);
         printSLVector(slVector);
 
         BucketSorter* bs = new BucketSorter();
         sortCharacters(bs, in);
+        bs->print();
     }
     in.close();
 }
