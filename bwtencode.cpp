@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include "bwtencode.h"
+#include "bucket.h"
 
 void encode(const char* filename){
     std::ifstream in(filename);
