@@ -35,6 +35,7 @@ void BucketSorter::Bucket::insert(unsigned int element){
     tail = newNode;
 }
 
+// TODO Untested
 void BucketSorter::bucket(unsigned char c, unsigned int index){
     if (!head){
         head = new Bucket(c);
@@ -49,12 +50,28 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
     }
     Bucket* b = head;
 
-    while (b->character != c){
-        if (b->next){
-            b = b->next;
+    // Find the bucket preceeding the correct one for c
+    while (b->next){
+        if (b->next->character > c){
+            break;
         } else {
-            b->next = new Bucket(c);
-            b->next->insert(index);
+            b = b->next;
         }
     }
+
+    if (b->next){
+        if (b->next->character != c){
+            Bucket* newBucket = new Bucket(c);
+            newBucket->next = b->next;
+            b->next = newBucket;
+            b = newBucket;
+        } else {
+            b = b->next;
+        }
+    } else {
+        b->next = new Bucket(c);
+        b = b->next;
+    }
+
+    b->insert(index);
 }
