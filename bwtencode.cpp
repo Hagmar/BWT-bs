@@ -11,6 +11,7 @@ void encode(const char* filename){
         std::cerr << "Error: cannot open file " << filename << std::endl;
     } else {
         std::vector<bool> slVector = generateSLVector(filename);
+        printSLVector(slVector);
     }
     in.close();
 }
@@ -23,6 +24,13 @@ std::vector<bool> generateSLVector(const char* filename){
     std::vector<bool> slVector(filesize);
     in.seekg(0, in.beg);
 
+    populateSLVector(&slVector, in);
+
+    return slVector;
+}
+
+void populateSLVector(std::vector<bool>* slVectorPtr, std::istream& in){
+    std::vector<bool>& slVector = *slVectorPtr;
     char c;
     char lastC;
     unsigned char slStatus;
@@ -53,8 +61,6 @@ std::vector<bool> generateSLVector(const char* filename){
         offset--;
     }
     slVector[position-1] = 1;
-
-    return slVector;
 }
 
 int main(int argc, char** argv){

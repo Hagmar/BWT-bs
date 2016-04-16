@@ -3,6 +3,7 @@
 
 void encode(const char*);
 std::vector<bool> generateSLVector(const char*);
+void populateSLVector(std::vector<bool>*, std::istream&);
 
 int main(int, char**);
 
