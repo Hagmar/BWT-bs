@@ -1,28 +1,39 @@
 #include <iostream>
 #include "bucket.h"
 
-BucketSorter::Bucket::Node::Node(unsigned int n){
-    num = n;
+template <class T, class V>
+template <class T2, class V2>
+template <class V3>
+BucketSorter<T, V>::Bucket<T2, V2>::Node<V3>::Node(V3 n){
+    value = n;
     next = 0;
 }
 
-BucketSorter::Bucket::Bucket(){
+template <class T, class V>
+template <class T2, class V2>
+BucketSorter<T, V>::Bucket<T2, V2>::Bucket(){
     Construct(0);
 }
 
-BucketSorter::Bucket::Bucket(unsigned char c){
+template <class T, class V>
+template <class T2, class V2>
+BucketSorter<T, V>::Bucket<T2, V2>::Bucket(T2 c){
     Construct(c);
 }
 
-void BucketSorter::Bucket::Construct(unsigned char c){
-    character = c;
+template <class T, class V>
+template <class T2, class V2>
+void BucketSorter<T, V>::Bucket<T2, V2>::Construct(T2 c){
+    identifier = c;
     head = 0;
     tail = 0;
     next = 0;
 }
 
-BucketSorter::Bucket::~Bucket(){
-    Node* n;
+template <class T, class V>
+template <class T2, class V2>
+BucketSorter<T, V>::Bucket<T2, V2>::~Bucket(){
+    Node<V>* n;
 
     while (head){
         n = head->next;
@@ -31,12 +42,14 @@ BucketSorter::Bucket::~Bucket(){
     }
 }
 
-BucketSorter::BucketSorter(){
+template <class T, class V>
+BucketSorter<T, V>::BucketSorter(){
     head = 0;
 }
 
-BucketSorter::~BucketSorter(){
-    Bucket* b;
+template <class T, class V>
+BucketSorter<T, V>::~BucketSorter(){
+    Bucket<T, V>* b;
 
     while (head){
         b = head->next;
@@ -45,8 +58,10 @@ BucketSorter::~BucketSorter(){
     }
 }
 
-void BucketSorter::Bucket::insert(unsigned int element){
-    Node* newNode = new Node(element);
+template <class T, class V>
+template <class T2, class V2>
+void BucketSorter<T, V>::Bucket<T2, V2>::insert(V2 element){
+    Node<V>* newNode = new Node<V>(element);
     if (!head){
         head = newNode;
     }
@@ -56,27 +71,27 @@ void BucketSorter::Bucket::insert(unsigned int element){
     tail = newNode;
 }
 
-// TODO Untested
-void BucketSorter::bucket(unsigned char c, unsigned int index){
+template <class T, class V>
+void BucketSorter<T, V>::bucket(T c, V index){
     if (!head){
-        head = new Bucket(c);
+        head = new Bucket<T, V>(c);
         head->insert(index);
         return;
-    } else if (head->character == c){
+    } else if (head->identifier == c){
         head->insert(index);
         return;
-    } else if (head->character > c){
-        Bucket* newBucket = new Bucket(c);
+    } else if (head->identifier > c){
+        Bucket<T, V>* newBucket = new Bucket<T, V>(c);
         newBucket->insert(index);
         newBucket->next = head;
         head = newBucket;
         return;
     }
-    Bucket* b = head;
+    Bucket<T, V>* b = head;
 
     // Find the bucket preceeding the correct one for c
     while (b->next){
-        if (b->next->character >= c){
+        if (b->next->identifier >= c){
             break;
         } else {
             b = b->next;
@@ -84,8 +99,8 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
     }
 
     if (b->next){
-        if (b->next->character != c){
-            Bucket* newBucket = new Bucket(c);
+        if (b->next->identifier != c){
+            Bucket<T, V>* newBucket = new Bucket<T, V>(c);
             newBucket->next = b->next;
             b->next = newBucket;
             b = newBucket;
@@ -93,7 +108,7 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
             b = b->next;
         }
     } else {
-        b->next = new Bucket(c);
+        b->next = new Bucket<T, V>(c);
         b = b->next;
     }
 
@@ -101,22 +116,27 @@ void BucketSorter::bucket(unsigned char c, unsigned int index){
 }
 
 // Debugging
-void BucketSorter::Bucket::print(){
-    Node* n = head;
+template <class T, class V>
+template <class T2, class V2>
+void BucketSorter<T, V>::Bucket<T2, V2>::print(){
+    Node<V>* n = head;
 
-    std::cout << "Bucket: " << character << std::endl;
+    std::cout << "Bucket: " << identifier << std::endl;
     while (n){
-        std::cout << n->num << " ";
+        std::cout << n->value << " ";
         n = n->next;
     }
     std::cout << std::endl;
 }
 
-void BucketSorter::print(){
-    Bucket* b = head;
+template <class T, class V>
+void BucketSorter<T, V>::print(){
+    Bucket<T, V>* b = head;
     
     while (b){
         b->print();
         b = b->next;
     }
 }
+
+template class BucketSorter<unsigned char, unsigned int>;

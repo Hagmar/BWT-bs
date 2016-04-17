@@ -6,7 +6,7 @@
 void encode(const char*);
 std::vector<bool> generateSLVector(std::istream&);
 void populateSLVector(std::vector<bool>*, std::istream&);
-void sortCharacters(BucketSorter*, std::istream&);
+void sortCharacters(BucketSorter<unsigned char, unsigned int>*, std::istream&);
 
 int main(int, char**);
 

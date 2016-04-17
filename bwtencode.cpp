@@ -15,7 +15,7 @@ void encode(const char* filename){
         in.seekg(0, in.beg);
         printSLVector(slVector);
 
-        BucketSorter* bs = new BucketSorter();
+        BucketSorter<unsigned char, unsigned int>* bs = new BucketSorter<unsigned char, unsigned int>();
         sortCharacters(bs, in);
         bs->print();
     }
@@ -66,7 +66,7 @@ void populateSLVector(std::vector<bool>* slVectorPtr, std::istream& in){
     slVector[position-1] = 1;
 }
 
-void sortCharacters(BucketSorter* bs, std::istream& in){
+void sortCharacters(BucketSorter<unsigned char, unsigned int>* bs, std::istream& in){
     char c;
     unsigned int index;
 
