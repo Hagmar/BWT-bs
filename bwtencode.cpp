@@ -24,7 +24,7 @@ void encode(const char* filename){
         in.seekg(0, in.beg);
         BucketSorter<unsigned int, unsigned int>* sDist =
             new BucketSorter<unsigned int, unsigned int>();
-        sDistanceBucket(sDist, &slVector);
+        sDistanceBucket(sDist, bs, &slVector);
         sDist->print();
     }
     in.close();
@@ -80,22 +80,47 @@ void sortCharacters(BucketSorter<unsigned char, unsigned int>* bs, std::istream&
 
     while (in.get(c)){
         index = in.tellg();
-        bs->bucket((unsigned char) c, index);
+        // -1 because tell(g) points to the index of the next character
+        bs->bucket((unsigned char) c, index-1);
     }
 }
 
-void sDistanceBucket(BucketSorter<unsigned int, unsigned int>* bs, std::vector<bool>* slVectorPtr){
+void sDistanceBucket(BucketSorter<unsigned int, unsigned int>* sDistBucket,
+        BucketSorter<unsigned char, unsigned int>* bs,
+        std::vector<bool>* slVectorPtr){
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int>* bucket = bs->head;
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int>
+        ::Node<unsigned int>* node;
+    unsigned int distance;
+
+    while (bucket){
+        node = bucket->head;
+        while (node){
+            distance = calculateSDistance(node->value, slVectorPtr);
+            if (distance){
+                sDistBucket->bucket(distance, node->value+1);
+            }
+
+            node = node->next;
+        }
+        bucket = bucket->next;
+    }
+}
+
+unsigned int calculateSDistance(unsigned int index, std::vector<bool>* slVectorPtr){
     std::vector<bool>& slVector = *slVectorPtr;
     unsigned int distance = 0;
-    for (unsigned int i = 0; i < slVector.size(); i++){
-        if (distance){
-            bs->bucket(distance, i);
-            distance++;
-        }
-        if (slVector[i]){
-            distance = 1;
+
+    while (index){
+        distance++;
+        if (slVector[--index]){
+            return distance;
         }
     }
+
+    return 0;
 }
 
 int main(int argc, char** argv){
