@@ -140,3 +140,4 @@ void BucketSorter<T, V>::print(){
 }
 
 template class BucketSorter<unsigned char, unsigned int>;
+template class BucketSorter<unsigned int, unsigned int>;
