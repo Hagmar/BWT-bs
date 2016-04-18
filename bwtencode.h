@@ -10,6 +10,8 @@ void sortCharacters(BucketSorter<unsigned char, unsigned int>*, std::istream&);
 void sDistanceBucket(BucketSorter<unsigned int, unsigned int>*,
         BucketSorter<unsigned char, unsigned int>*, std::vector<bool>*);
 unsigned int calculateSDistance(unsigned int, std::vector<bool>*);
+void bucketSSubstrings(BucketSorter<unsigned char, unsigned int>*,
+        std::vector<bool>*);
 
 int main(int, char**);
 

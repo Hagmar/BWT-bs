@@ -26,6 +26,9 @@ void encode(const char* filename){
             new BucketSorter<unsigned int, unsigned int>();
         sDistanceBucket(sDist, bs, &slVector);
         sDist->print();
+
+        bucketSSubstrings(bs, &slVector);
+        bs->print();
     }
     in.close();
 }
@@ -121,6 +124,53 @@ unsigned int calculateSDistance(unsigned int index, std::vector<bool>* slVectorP
     }
 
     return 0;
+}
+
+void bucketSSubstrings(BucketSorter<unsigned char, unsigned int>* bs,
+        std::vector<bool>* slVectorPtr){
+    std::vector<bool>& slVector = *slVectorPtr;
+
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int> *bucket = bs->head, *lastBucket;
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int>
+        ::Node<unsigned int> *node, *lastNode = NULL;
+
+    unsigned int index;
+    while (bucket){
+        node = bucket->head;
+        while (node){
+            index = node->value;
+            if (!slVector[index]){
+                if (node == bucket->head){
+                    bucket->head = node->next;
+                    delete node;
+                    node = bucket->head;
+                } else {
+                    lastNode->next = node->next;
+                    delete node;
+                    node = lastNode->next;
+                }
+            } else {
+                lastNode = node;
+                node = node->next;
+            }
+        }
+        if (!bucket->head){
+            if (bucket == bs->head){
+                bs->head = bucket->next;
+                delete bucket;
+                bucket = bs->head;
+            } else {
+                lastBucket->next = bucket->next;
+                delete bucket;
+                bucket = lastBucket->next;
+            }
+        } else {
+            lastBucket = bucket;
+            bucket = bucket->next;
+        }
+    }
 }
 
 int main(int argc, char** argv){
