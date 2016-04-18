@@ -6,7 +6,7 @@ template <class T2, class V2>
 template <class V3>
 BucketSorter<T, V>::Bucket<T2, V2>::Node<V3>::Node(V3 n){
     value = n;
-    next = 0;
+    next = NULL;
 }
 
 template <class T, class V>
@@ -25,9 +25,9 @@ template <class T, class V>
 template <class T2, class V2>
 void BucketSorter<T, V>::Bucket<T2, V2>::Construct(T2 c){
     identifier = c;
-    head = 0;
-    tail = 0;
-    next = 0;
+    head = NULL;
+    tail = NULL;
+    next = NULL;
 }
 
 template <class T, class V>
@@ -44,7 +44,7 @@ BucketSorter<T, V>::Bucket<T2, V2>::~Bucket(){
 
 template <class T, class V>
 BucketSorter<T, V>::BucketSorter(){
-    head = 0;
+    head = NULL;
 }
 
 template <class T, class V>
@@ -69,6 +69,36 @@ void BucketSorter<T, V>::Bucket<T2, V2>::insert(V2 element){
         tail->next = newNode;
     }
     tail = newNode;
+}
+
+template <class T, class V>
+template <class T2, class V2>
+void BucketSorter<T, V>::Bucket<T2, V2>::remove(V2 element){
+    Node<V>* node;
+    Node<V>* lastNode = head;
+
+    while (head->value == element){
+        head = head->next;
+        delete lastNode;
+        lastNode = head;
+    }
+    if (!head){
+        tail = NULL;
+        return;
+    }
+
+    node = lastNode->next;
+    while (node){
+        if (node->value == element){
+            lastNode->next = node->next;
+            delete node;
+            node = lastNode->next;
+        } else {
+            lastNode = node;
+            node = node->next;
+        }
+    }
+    tail = lastNode;
 }
 
 template <class T, class V>
