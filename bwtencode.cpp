@@ -23,7 +23,6 @@ void encode(const char* filename){
         in.seekg(0, in.beg);
         SDistList* sDist = new SDistList();
         sDistanceBucket(sDist, bs, &slVector);
-        sDist->print();
 
         bucketSSubstrings(bs, &slVector);
         bs->print();
@@ -202,7 +201,52 @@ void sortSBucket(BucketSorter<unsigned char, unsigned int>::
         SDistList* sDist){
     BucketSorter<unsigned char, unsigned int>
         ::Bucket<unsigned char, unsigned int>
-        ::Node<unsigned int> *node;
+        ::Node<unsigned int> *node, *sStringNode, *lastSStringNode;
+    SDistList::Node* sDistNode = sDist->head;
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int>* sDistBucket;
+
+    unsigned int sortIndex = 0;
+    unsigned int sorted = 0;
+    unsigned int sDistIndex;
+
+    BucketSorter<unsigned int, unsigned int>* sortedBucket =
+        new BucketSorter<unsigned int, unsigned int>();
+
+    while (sDistNode){
+        std::cout << "Using s-list with distance " << sDistNode->distance << std::endl;
+        sDistBucket = sDistNode->bs->head;
+        while (sDistBucket){
+            sDistBucket->print();
+            node = sDistBucket->head;
+            while (node){
+                sDistIndex = node->value;
+                sStringNode = bucket->head;
+                while (sStringNode){
+                    if (sDistIndex == sStringNode->value + sDistNode->distance){
+                        std::cout << "Sorting "<<sStringNode->value<<" into "<<sortIndex<<std::endl;
+                        sortedBucket->bucket(sortIndex, sStringNode->value);
+                        sorted++;
+                        if (sStringNode == bucket->head){
+                            bucket->head = sStringNode->next;
+                        } else {
+                            lastSStringNode->next = sStringNode->next;
+                        }
+                        delete sStringNode;
+                        break;
+                    }
+                    lastSStringNode = sStringNode;
+                    sStringNode = sStringNode->next;
+                }
+                node = node->next;
+            }
+            sortIndex += sorted;
+            sorted = 0;
+            sDistBucket = sDistBucket->next;
+        }
+        sDistNode = sDistNode->next;
+    }
+    sortedBucket->print();
 
 }
 
