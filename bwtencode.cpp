@@ -3,6 +3,7 @@
 #include <vector>
 #include "bwtencode.h"
 #include "bucket.h"
+#include "sdistlist.h"
 
 void encode(const char* filename){
     std::ifstream in(filename, std::ifstream::ate);
@@ -21,8 +22,7 @@ void encode(const char* filename){
 
         in.clear();
         in.seekg(0, in.beg);
-        BucketSorter<unsigned int, unsigned int>* sDist =
-            new BucketSorter<unsigned int, unsigned int>();
+        SDistList* sDist = new SDistList();
         sDistanceBucket(sDist, bs, &slVector);
         sDist->print();
 
@@ -90,7 +90,7 @@ void sortCharacters(BucketSorter<unsigned char, unsigned int>* bs, std::istream&
     }
 }
 
-void sDistanceBucket(BucketSorter<unsigned int, unsigned int>* sDistBucket,
+void sDistanceBucket(SDistList* sDist,
         BucketSorter<unsigned char, unsigned int>* bs,
         std::vector<bool>* slVectorPtr){
     BucketSorter<unsigned char, unsigned int>
@@ -98,6 +98,7 @@ void sDistanceBucket(BucketSorter<unsigned int, unsigned int>* sDistBucket,
     BucketSorter<unsigned char, unsigned int>
         ::Bucket<unsigned char, unsigned int>
         ::Node<unsigned int>* node;
+    SDistList::Node* sDistBucket = sDist->head;
     unsigned int distance;
 
     while (bucket){
@@ -105,9 +106,16 @@ void sDistanceBucket(BucketSorter<unsigned int, unsigned int>* sDistBucket,
         while (node){
             distance = calculateSDistance(node->value, slVectorPtr);
             if (distance){
-                sDistBucket->bucket(distance, node->value+1);
+                while (sDistBucket->distance != distance){
+                    if (!sDistBucket->next){
+                        sDistBucket->next = new SDistList::
+                            Node(sDistBucket->distance+1);
+                    }
+                    sDistBucket = sDistBucket->next;
+                }
+                sDistBucket->bs->bucket(bucket->identifier, node->value+1);
+                sDistBucket = sDist->head;
             }
-
             node = node->next;
         }
         bucket = bucket->next;
@@ -178,19 +186,26 @@ void bucketSSubstrings(BucketSorter<unsigned char, unsigned int>* bs,
 }
 
 void sortSSubstrings(BucketSorter<unsigned char, unsigned int>* sStrings,
-        BucketSorter<unsigned int, unsigned int>* sDist){
+        SDistList* sDist){
     BucketSorter<unsigned char, unsigned int>
         ::Bucket<unsigned char, unsigned int> *bucket = sStrings->head;
+
+    while (bucket){
+        if (bucket->head != bucket->tail){
+            sortSBucket(bucket, sDist);
+        }
+        bucket = bucket->next;
+    }
+}
+
+void sortSBucket(BucketSorter<unsigned char, unsigned int>::
+        Bucket<unsigned char, unsigned int>* bucket,
+        SDistList* sDist){
     BucketSorter<unsigned char, unsigned int>
         ::Bucket<unsigned char, unsigned int>
         ::Node<unsigned int> *node;
 
-    while (bucket){
-        if (bucket->head != bucket->tail){
 
-        }
-        bucket = bucket->next;
-    }
 }
 
 int main(int argc, char** argv){
