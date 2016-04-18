@@ -18,7 +18,6 @@ void encode(const char* filename){
         BucketSorter<unsigned char, unsigned int>* bs =
             new BucketSorter<unsigned char, unsigned int>();
         sortCharacters(bs, in);
-        bs->print();
 
         in.clear();
         in.seekg(0, in.beg);
@@ -28,6 +27,9 @@ void encode(const char* filename){
         sDist->print();
 
         bucketSSubstrings(bs, &slVector);
+        bs->print();
+
+        sortSSubstrings(bs, sDist);
         bs->print();
     }
     in.close();
@@ -156,6 +158,8 @@ void bucketSSubstrings(BucketSorter<unsigned char, unsigned int>* bs,
                 node = node->next;
             }
         }
+        bucket->tail = lastNode;
+
         if (!bucket->head){
             if (bucket == bs->head){
                 bs->head = bucket->next;
@@ -170,6 +174,22 @@ void bucketSSubstrings(BucketSorter<unsigned char, unsigned int>* bs,
             lastBucket = bucket;
             bucket = bucket->next;
         }
+    }
+}
+
+void sortSSubstrings(BucketSorter<unsigned char, unsigned int>* sStrings,
+        BucketSorter<unsigned int, unsigned int>* sDist){
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int> *bucket = sStrings->head;
+    BucketSorter<unsigned char, unsigned int>
+        ::Bucket<unsigned char, unsigned int>
+        ::Node<unsigned int> *node;
+
+    while (bucket){
+        if (bucket->head != bucket->tail){
+
+        }
+        bucket = bucket->next;
     }
 }
 

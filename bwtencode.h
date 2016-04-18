@@ -12,6 +12,8 @@ void sDistanceBucket(BucketSorter<unsigned int, unsigned int>*,
 unsigned int calculateSDistance(unsigned int, std::vector<bool>*);
 void bucketSSubstrings(BucketSorter<unsigned char, unsigned int>*,
         std::vector<bool>*);
+void sortSSubstrings(BucketSorter<unsigned char, unsigned int>*,
+        BucketSorter<unsigned int, unsigned int>*);
 
 int main(int, char**);
 
