@@ -14,7 +14,6 @@ void encode(const char* filename){
         std::vector<bool> slVector = generateSLVector(in);
         in.clear();
         in.seekg(0, in.beg);
-        printSLVector(slVector);
 
         BucketSorter<unsigned char, unsigned int>* bs =
             new BucketSorter<unsigned char, unsigned int>();
@@ -113,7 +112,7 @@ void sDistanceBucket(SDistList* sDist,
                     }
                     sDistBucket = sDistBucket->next;
                 }
-                sDistBucket->bs->bucket(bucket->identifier, node->value+1);
+                sDistBucket->bs->bucket(bucket->identifier, node->value);
                 sDistBucket = sDist->head;
             }
             node = node->next;
@@ -204,7 +203,6 @@ void sortSBucket(BucketSorter<unsigned char, unsigned int>::
     BucketSorter<unsigned char, unsigned int>
         ::Bucket<unsigned char, unsigned int>
         ::Node<unsigned int> *node;
-
 
 }
 
