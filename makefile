@@ -1,6 +1,9 @@
 CC=g++
 
-all: bwtencode
+all: bwtsearch bwtencode
+
+bwtsearch: bwtsearch.cpp bwtsearch.h
+	$(CC) -o bwtsearch bwtsearch.cpp
 
 bwtencode: bwtencode.cpp bwtencode.h bucket.o sdistlist.o
 	$(CC) -o bwtencode bwtencode.cpp bucket.o sdistlist.o
