@@ -14,24 +14,31 @@ OccIndex::OccBlock::OccBlock(unsigned int pos){
 }
 
 OccIndex::OccIndex(){
-    head = new OccBlock(0);
+    head = new OccBlock(BLOCKSIZE);
     tail = head;
+}
+
+unsigned int OccIndex::OccBlock::occInBlock(unsigned char c){
+    OccEntry* entry = head;
+    while (entry->c != c){
+        entry = entry->next;
+    }
+    return entry->occ;
 }
 
 void OccIndex::createOccIndex(const char* filename){
     std::ifstream in(filename);
-    OccIndex* occurences = new OccIndex();
-    OccBlock* block = occurences->head;
+    OccBlock* block = head;
     OccBlock::OccEntry* currEntry = NULL;
     unsigned int blockSize = 0;
 
     char c;
     while (in.get(c)){
-        if (blockSize >= 1000000){
+        if (blockSize >= BLOCKSIZE){
             block->next = new OccBlock(block->position + blockSize);
             blockSize = 0;
             block = block->next;
-            occurences->tail = block;
+            tail = block;
             currEntry = NULL;
         }
 
@@ -60,7 +67,7 @@ void OccIndex::createOccIndex(const char* filename){
 
         blockSize++;
     } 
-    occurences->print();
+    in.close();
 }
 
 

@@ -1,6 +1,8 @@
 #ifndef OCCINDEX_H
 #define OCCINDEX_H
 
+#define BLOCKSIZE 1000000
+
 class OccIndex {
     public:
         class OccBlock {
@@ -21,6 +23,7 @@ class OccIndex {
                 OccEntry* head;
                 OccBlock* next;
 
+                unsigned int occInBlock(unsigned char);
                 OccBlock(unsigned int);
 
                 // Debugging
