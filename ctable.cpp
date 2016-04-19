@@ -10,6 +10,7 @@ CTable::CharEntry::CharEntry(unsigned char character, unsigned int value){
 
 CTable::CTable(OccIndex* occIndex){
     OccIndex::OccBlock::OccEntry* entry = occIndex->tail->head;
+    head = NULL;
 
     CharEntry* charEntry;
     unsigned int c;
@@ -23,7 +24,8 @@ CTable::CTable(OccIndex* occIndex){
             charEntry->next = new CharEntry(c, previous);
             charEntry = charEntry->next;
         }
-        previous+= entry->occ;
+        previous += entry->occ;
+        entry = entry->next;
     }
 }
 
@@ -37,5 +39,6 @@ void CTable::print(){
     CharEntry* entry = head;
     while (entry){
         entry->print();
+        entry = entry->next;
     }
 }
