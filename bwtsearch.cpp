@@ -2,6 +2,7 @@
 #include <fstream>
 #include "bwtsearch.h"
 #include "occindex.h"
+#include "ctable.h"
 
 unsigned int occ(unsigned char c, unsigned int q, OccIndex* occIndex,
         std::istream& in){
@@ -42,6 +43,9 @@ int main(int argc, char** argv){
 
         OccIndex* occIndex = new OccIndex();
         occIndex->createOccIndex(argv[2]);
+
+        CTable* cTable = new CTable(occIndex);
+        cTable->print();
 
         std::ifstream in(argv[2]);
         std::cout << occ('s', 9, occIndex, in) << std::endl;
