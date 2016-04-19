@@ -31,22 +31,6 @@ unsigned int occ(unsigned char c, unsigned int q, OccIndex* occIndex,
     return occurrences;
 }
 
-OccIndex::OccBlock* getIndexBlock(unsigned char c, unsigned int q, OccIndex* occIndex){
-    OccIndex::OccBlock* block = occIndex->head;
-    while (block->position < q){
-        if (block->next){
-            block = block->next;
-        } else {
-            break;
-        }
-    }
-    if (block->position < q){
-        return block;
-    } else {
-        return NULL;
-    }
-}
-
 int main(int argc, char** argv){
     if (argc != 5){
         std::cerr << "Error, wrong number of arguments" << std::endl;

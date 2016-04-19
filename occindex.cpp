@@ -8,9 +8,33 @@ OccIndex::OccBlock::OccEntry::OccEntry(unsigned char character){
     next = NULL;
 }
 
+OccIndex::OccBlock::OccEntry::OccEntry(OccEntry* entry){
+    c = entry->c;
+    occ = entry->occ;
+    next = NULL;
+}
+
 OccIndex::OccBlock::OccBlock(unsigned int pos){
     position = pos;
     head = NULL;
+    next = NULL;
+}
+
+OccIndex::OccBlock::OccBlock(unsigned int pos, OccBlock* block){
+    position = pos;
+    next = NULL;
+
+    OccEntry* entry = block->head;
+    if (entry){
+        head = new OccEntry(entry);
+        entry = entry->next;
+        OccEntry* lastEntry = head;
+        while (entry){
+            lastEntry->next = new OccEntry(entry);
+            lastEntry = lastEntry->next;
+            entry = entry->next;
+        }
+    }
 }
 
 OccIndex::OccIndex(){
@@ -35,11 +59,11 @@ void OccIndex::createOccIndex(const char* filename){
     char c;
     while (in.get(c)){
         if (blockSize >= BLOCKSIZE){
-            block->next = new OccBlock(block->position + blockSize);
+            block->next = new OccBlock(block->position + blockSize, block);
             blockSize = 0;
             block = block->next;
             tail = block;
-            currEntry = NULL;
+            currEntry = block->head;
         }
 
         if (!currEntry){
@@ -68,6 +92,26 @@ void OccIndex::createOccIndex(const char* filename){
         blockSize++;
     } 
     in.close();
+}
+
+OccIndex::OccBlock* getIndexBlock(unsigned char c, unsigned int q, OccIndex* occIndex){
+    OccIndex::OccBlock* block = occIndex->head;
+    while (block->position < q){
+        if (block->next){
+            if (block->next->position < q){
+                block = block->next;
+            } else {
+                break;
+            }
+        } else {
+            break;
+        }
+    }
+    if (block->position < q){
+        return block;
+    } else {
+        return NULL;
+    }
 }
 
 

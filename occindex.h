@@ -14,6 +14,7 @@ class OccIndex {
                         OccEntry* next;
 
                         OccEntry(unsigned char);
+                        OccEntry(OccEntry*);
 
                         // Debugging
                         void print();
@@ -24,7 +25,9 @@ class OccIndex {
                 OccBlock* next;
 
                 unsigned int occInBlock(unsigned char);
+
                 OccBlock(unsigned int);
+                OccBlock(unsigned int, OccBlock*);
 
                 // Debugging
                 void print();
@@ -34,6 +37,7 @@ class OccIndex {
         OccBlock* tail;
 
         void createOccIndex(const char*);
+        OccBlock* getIndexBlock(unsigned char, unsigned int, OccIndex*);
 
         OccIndex();
         ~OccIndex();
