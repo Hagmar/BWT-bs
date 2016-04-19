@@ -20,7 +20,7 @@ unsigned int occ(unsigned char c, unsigned int q, OccIndex* occIndex,
     }
 
     char readChar;
-    for (; i < q; i++){
+    for (; i <= q; i++){
         if (!in.get(readChar)){
             break;
         }
