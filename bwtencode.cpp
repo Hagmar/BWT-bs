@@ -210,8 +210,13 @@ void sortSBucket(BucketSorter<unsigned char, unsigned int>::
     unsigned int sorted = 0;
     unsigned int sDistIndex;
 
-    BucketSorter<unsigned int, unsigned int>* sortedBucket =
+    BucketSorter<unsigned int, unsigned int>* sortedBucketSorter =
         new BucketSorter<unsigned int, unsigned int>();
+    BucketSorter<unsigned int, unsigned int>::
+        Bucket<unsigned int, unsigned int> *sortedBucket, *sortedBucketIterator;
+    BucketSorter<unsigned int, unsigned int>::
+        Bucket<unsigned int, unsigned int>::
+        Node<unsigned int> *sortedBucketNode, *sortedBucketIteratorNode;
 
     while (sDistNode){
         std::cout << "Using s-list with distance " << sDistNode->distance << std::endl;
@@ -225,7 +230,7 @@ void sortSBucket(BucketSorter<unsigned char, unsigned int>::
                 while (sStringNode){
                     if (sDistIndex == sStringNode->value + sDistNode->distance){
                         std::cout << "Sorting "<<sStringNode->value<<" into "<<sortIndex<<std::endl;
-                        sortedBucket->bucket(sortIndex, sStringNode->value);
+                        sortedBucketSorter->bucket(sortIndex, sStringNode->value);
                         sorted++;
                         if (sStringNode == bucket->head){
                             bucket->head = sStringNode->next;
@@ -246,8 +251,27 @@ void sortSBucket(BucketSorter<unsigned char, unsigned int>::
         }
         sDistNode = sDistNode->next;
     }
-    sortedBucket->print();
 
+    sortedBucket = sortedBucketSorter->head;
+    while (sortedBucket){
+        if (sortedBucket->head != sortedBucket->tail){
+            sortedBucketIterator = sortedBucketSorter->head;
+            while (sortedBucketIterator){
+                if (sortedBucketIterator != sortedBucket){
+                    sortedBucketIteratorNode = sortedBucketIterator->head;
+                    while (sortedBucketIteratorNode){
+                        sortedBucketNode = sortedBucket->head;
+                        while (sortedBucketNode){
+                            sortedBucketNode = sortedBucketNode->next;
+                        }
+                    }
+                    sortedBucketIteratorNode = sortedBucketIteratorNode->next;
+                }
+                sortedBucketIterator = sortedBucketIterator->next;
+            }
+        }
+        sortedBucket = sortedBucket->next;
+    }
 }
 
 int main(int argc, char** argv){
