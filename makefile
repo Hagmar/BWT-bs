@@ -5,8 +5,11 @@ all: bwtsearch bwtencode
 debug: CCFLAGS += -g3
 debug: clean all
 
-bwtsearch: bwtsearch.cpp bwtsearch.h occindex.o
-	$(CC) $(CCFLAGS) -o bwtsearch bwtsearch.cpp occindex.o
+bwtsearch: bwtsearch.cpp bwtsearch.h occindex.o ctable.o
+	$(CC) $(CCFLAGS) -o bwtsearch bwtsearch.cpp occindex.o ctable.o
+
+ctable.o: ctable.cpp ctable.h occindex.h
+	$(CC) $(CCFLAGS) -c ctable.cpp
 
 occindex.o: occindex.cpp occindex.h
 	$(CC) $(CCFLAGS) -c occindex.cpp
