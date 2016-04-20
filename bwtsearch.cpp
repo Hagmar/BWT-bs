@@ -45,10 +45,6 @@ int main(int argc, char** argv){
         occIndex->createOccIndex(argv[2]);
 
         CTable* cTable = new CTable(occIndex);
-        cTable->print();
-
-        std::ifstream in(argv[2]);
-        std::cout << occ('s', 9, occIndex, in) << std::endl;
     }
     return 0;
 }
