@@ -33,6 +33,7 @@ unsigned int occ(unsigned char c, unsigned int q, OccIndex* occIndex,
     return occurrences;
 }
 
+// TODO Segfaults on empty pattern
 searchResult backwardSearch(const char* pattern, const char* filename,
         OccIndex* index, CTable* cTable){
     searchResult result;
@@ -55,6 +56,17 @@ searchResult backwardSearch(const char* pattern, const char* filename,
     return result;
 }
 
+void interpretResults(searchResult result, const char* mode){
+    if (!std::strcmp(mode, "-n")){
+        if (result.last < result.first){
+            std::cout << 0 << std::endl;
+        } else {
+            std::cout << result.last-result.first + 1 << std::endl;
+        }
+    } else {
+    }
+}
+
 int main(int argc, char** argv){
     if (argc != 5){
         std::cerr << "Error, wrong number of arguments" << std::endl;
@@ -69,7 +81,9 @@ int main(int argc, char** argv){
 
         CTable* cTable = new CTable(occIndex);
 
-        backwardSearch(pattern, filename, occIndex, cTable);
+        searchResult result = backwardSearch(pattern, filename, occIndex, cTable);
+
+        interpretResults(result, mode);
     }
     return 0;
 }

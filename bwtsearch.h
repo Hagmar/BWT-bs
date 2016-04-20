@@ -13,6 +13,7 @@ unsigned int occ(unsigned char, unsigned int, OccIndex*, std::istream&);
 OccIndex::OccBlock* getIndexBlock(unsigned char, unsigned int, OccIndex*);
 
 searchResult backwardSearch(const char*, const char*, OccIndex*, CTable*);
+void interpretResults(searchResult, const char*);
 
 int main(int, char**);
 
