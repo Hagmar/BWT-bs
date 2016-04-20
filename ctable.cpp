@@ -27,13 +27,15 @@ CTable::CTable(OccIndex* occIndex){
         previous += entry->occ;
         entry = entry->next;
     }
+    // An end-entry for retrieving the C-value of the last character
+    charEntry->next = new CharEntry(0, previous);
 }
 
 // TODO Optimise to be better than O(n)?
 unsigned int CTable::getC(unsigned char c){
     CharEntry* entry = head;
     while (entry){
-        if (entry->c >= c){
+        if (entry->c >= c || !entry->c){
             return entry->v;
         }
         entry = entry->next;
