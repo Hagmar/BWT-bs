@@ -29,6 +29,7 @@ CTable::CTable(OccIndex* occIndex){
     }
 }
 
+// TODO Optimise to be better than O(n)?
 unsigned int CTable::getC(unsigned char c){
     CharEntry* entry = head;
     while (entry){
