@@ -29,6 +29,16 @@ CTable::CTable(OccIndex* occIndex){
     }
 }
 
+unsigned int CTable::getC(unsigned char c){
+    CharEntry* entry = head;
+    while (entry){
+        if (entry->c >= c){
+            return entry->v;
+        }
+        entry = entry->next;
+    }
+    return 0;
+}
 
 // Debugging
 void CTable::CharEntry::print(){

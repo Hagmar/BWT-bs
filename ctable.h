@@ -19,6 +19,8 @@ class CTable {
 
         CharEntry* head;
 
+        unsigned int getC(unsigned char);
+
         CTable(OccIndex*);
 
         // Debugging
