@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include "bwtsearch.h"
 #include "occindex.h"
 #include "ctable.h"
@@ -32,19 +33,43 @@ unsigned int occ(unsigned char c, unsigned int q, OccIndex* occIndex,
     return occurrences;
 }
 
+searchResult backwardSearch(const char* pattern, const char* filename,
+        OccIndex* index, CTable* cTable){
+    searchResult result;
+    result.first = 0;
+    result.last = 0;
+
+    std::ifstream in(filename);
+
+    unsigned int i = std::strlen(pattern) - 1;
+    unsigned char c = pattern[i];
+    result.first = cTable->getC(c);
+    result.last = cTable->getC(c+1) - 1;
+
+    while ((result.first <= result.last) && i){
+        c = pattern[--i];
+        result.first = cTable->getC(c) + occ(c, result.first-1, index, in);
+        result.last = cTable->getC(c) + occ(c, result.last, index, in) - 1;
+    }
+
+    return result;
+}
+
 int main(int argc, char** argv){
     if (argc != 5){
         std::cerr << "Error, wrong number of arguments" << std::endl;
     } else {
-        std::string mode = argv[1];
-        std::string filename = argv[2];
-        std::string index = argv[3];
-        std::string pattern = argv[4];
+        const char* mode = argv[1];
+        const char* filename = argv[2];
+        const char* index = argv[3];
+        const char* pattern = argv[4];
 
         OccIndex* occIndex = new OccIndex();
-        occIndex->createOccIndex(argv[2]);
+        occIndex->createOccIndex(filename);
 
         CTable* cTable = new CTable(occIndex);
+
+        backwardSearch(pattern, filename, occIndex, cTable);
     }
     return 0;
 }
