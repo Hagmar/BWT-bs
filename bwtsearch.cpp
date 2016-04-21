@@ -46,25 +46,40 @@ searchResult backwardSearch(const char* pattern, const char* filename,
     unsigned char c = pattern[i];
     result.first = cTable->getC(c);
     result.last = cTable->getC(c+1) - 1;
-
     while ((result.first <= result.last) && i){
         c = pattern[--i];
         result.first = cTable->getC(c) + occ(c, result.first-1, index, in);
         result.last = cTable->getC(c) + occ(c, result.last, index, in) - 1;
     }
 
+    in.close();
     return result;
 }
 
-void interpretResults(searchResult result, const char* mode){
+void interpretResults(searchResult result, const char* mode,
+        const char* filename, OccIndex* occIndex, CTable* cTable){
     if (!std::strcmp(mode, "-n")){
         if (result.last < result.first){
-            std::cout << 0 << std::endl;
         } else {
-            std::cout << result.last-result.first + 1 << std::endl;
         }
     } else {
+        bool listRecords = std::strcmp(mode, "-r");
+        findRecords(result, listRecords, filename, occIndex, cTable);
     }
+}
+
+void findRecords(searchResult result, bool list, const char* filename, OccIndex* occIndex, CTable* cTable){
+    std::ifstream in(filename);
+    unsigned int next;
+    char c = 0;
+    for (unsigned int hit = result.first; hit <= result.last; hit++){
+        in.seekg(hit);
+        in.get(c);
+            next = occ(c, hit, occIndex, in) + cTable->getC(c) - 1;
+            in.seekg(next);
+            in.get(c);
+    }
+    return;
 }
 
 int main(int argc, char** argv){
@@ -83,7 +98,7 @@ int main(int argc, char** argv){
 
         searchResult result = backwardSearch(pattern, filename, occIndex, cTable);
 
-        interpretResults(result, mode);
+        interpretResults(result, mode, filename, occIndex, cTable);
     }
     return 0;
 }
