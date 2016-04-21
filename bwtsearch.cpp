@@ -44,11 +44,20 @@ searchResult backwardSearch(const char* pattern, const char* filename,
 
     unsigned int i = std::strlen(pattern) - 1;
     unsigned char c = pattern[i];
+    cTable->print();
     result.first = cTable->getC(c);
     result.last = cTable->getC(c+1) - 1;
+    unsigned char occurrences;
     while ((result.first <= result.last) && i){
         c = pattern[--i];
-        result.first = cTable->getC(c) + occ(c, result.first-1, index, in);
+        if (result.first){
+            occurrences = occ(c, result.first-1, index, in);
+        } else {
+            in.clear();
+            in.seekg(0, in.beg);
+            occurrences = in.get() == c;
+        }
+        result.first = cTable->getC(c) + occurrences;
         result.last = cTable->getC(c) + occ(c, result.last, index, in) - 1;
     }
 
@@ -60,7 +69,9 @@ void interpretResults(searchResult result, const char* mode,
         const char* filename, OccIndex* occIndex, CTable* cTable){
     if (!std::strcmp(mode, "-n")){
         if (result.last < result.first){
+            std::cout << 0 << std::endl;
         } else {
+            std::cout << result.last-result.first + 1 << std::endl;
         }
     } else {
         bool listRecords = std::strcmp(mode, "-r");
@@ -75,10 +86,20 @@ void findRecords(searchResult result, bool list, const char* filename, OccIndex*
     for (unsigned int hit = result.first; hit <= result.last; hit++){
         in.seekg(hit);
         in.get(c);
+        std::cout << result.first << "   " << result.last <<std::endl;
+        std::cout << "Position: " << hit << std::endl;
+        std::cout << "Character: " << c << std::endl;
+        while (c != ']'){
             next = occ(c, hit, occIndex, in) + cTable->getC(c) - 1;
+            std::cout <<"Next: "<< next << std::endl;
             in.seekg(next);
             in.get(c);
+            std::cout << "New char: "<<c << std::endl;
+            std::cin>>next;
+        }
     }
+    occIndex->print();
+    std::cout << result.first << "   " << result.last << std::endl;
     return;
 }
 
