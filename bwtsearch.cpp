@@ -44,7 +44,6 @@ searchResult backwardSearch(const char* pattern, const char* filename,
 
     unsigned int i = std::strlen(pattern) - 1;
     unsigned char c = pattern[i];
-    cTable->print();
     result.first = cTable->getC(c);
     result.last = cTable->getC(c+1) - 1;
     unsigned char occurrences;
@@ -81,25 +80,31 @@ void interpretResults(searchResult result, const char* mode,
 
 void findRecords(searchResult result, bool list, const char* filename, OccIndex* occIndex, CTable* cTable){
     std::ifstream in(filename);
+    unsigned int record;
+    unsigned int scale;
+    bool reachedOffset;
     unsigned int next;
     char c = 0;
     for (unsigned int hit = result.first; hit <= result.last; hit++){
+        reachedOffset = false;
+        record = 0;
+        scale = 1;
         in.seekg(hit);
         in.get(c);
-        std::cout << result.first << "   " << result.last <<std::endl;
-        std::cout << "Position: " << hit << std::endl;
-        std::cout << "Character: " << c << std::endl;
-        while (c != ']'){
-            next = occ(c, hit, occIndex, in) + cTable->getC(c) - 1;
-            std::cout <<"Next: "<< next << std::endl;
+        next = occ(c, hit, occIndex, in) + cTable->getC(c) - 1;
+        while (c != '['){
+            if (c == ']'){
+                reachedOffset = true;
+            } else if (reachedOffset){
+                record += (c-'0') * scale;
+                scale *= 10;
+            }
             in.seekg(next);
             in.get(c);
-            std::cout << "New char: "<<c << std::endl;
-            std::cin>>next;
+            next = occ(c, next, occIndex, in) + cTable->getC(c) - 1;
         }
+        std::cout<< record<<std::endl;;
     }
-    occIndex->print();
-    std::cout << result.first << "   " << result.last << std::endl;
     return;
 }
 
