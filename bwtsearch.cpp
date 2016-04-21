@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <set>
 #include "bwtsearch.h"
 #include "occindex.h"
 #include "ctable.h"
@@ -74,17 +75,28 @@ void interpretResults(searchResult result, const char* mode,
         }
     } else {
         bool listRecords = std::strcmp(mode, "-r");
-        findRecords(result, listRecords, filename, occIndex, cTable);
+        std::set<unsigned int>* records;
+        records = findRecords(result, filename, occIndex, cTable);
+        if (listRecords){
+            std::set<unsigned int>::iterator it = records->begin();
+            while (it != records->end()){
+                std::cout << '[' << *it++ << ']' << std::endl;
+            }
+        } else {
+            std::cout << records->size() << std::endl;
+        }
     }
 }
 
-void findRecords(searchResult result, bool list, const char* filename, OccIndex* occIndex, CTable* cTable){
+std::set<unsigned int>* findRecords(searchResult result, const char* filename,
+        OccIndex* occIndex, CTable* cTable){
     std::ifstream in(filename);
     unsigned int record;
     unsigned int scale;
     bool reachedOffset;
     unsigned int next;
     char c = 0;
+    std::set<unsigned int>* records = new std::set<unsigned int>();
     for (unsigned int hit = result.first; hit <= result.last; hit++){
         reachedOffset = false;
         record = 0;
@@ -103,9 +115,9 @@ void findRecords(searchResult result, bool list, const char* filename, OccIndex*
             in.get(c);
             next = occ(c, next, occIndex, in) + cTable->getC(c) - 1;
         }
-        std::cout<< record<<std::endl;;
+        records->insert(record);
     }
-    return;
+    return records;
 }
 
 int main(int argc, char** argv){
@@ -125,6 +137,9 @@ int main(int argc, char** argv){
         searchResult result = backwardSearch(pattern, filename, occIndex, cTable);
 
         interpretResults(result, mode, filename, occIndex, cTable);
+
+        delete occIndex;
+        delete cTable;
     }
     return 0;
 }
