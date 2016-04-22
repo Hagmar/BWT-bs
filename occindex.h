@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#define BLOCKSIZE 1000000
+#define BLOCKSIZE 100000
 
 class OccIndex {
     public:
@@ -41,7 +41,7 @@ class OccIndex {
 
         void createOccIndex(std::istream&);
         unsigned int occ(unsigned char, unsigned int, std::istream&);
-        OccBlock* getIndexBlock(unsigned char, unsigned int);
+        OccBlock* getIndexBlock(unsigned int);
 
         OccIndex();
         ~OccIndex();

@@ -63,6 +63,9 @@ OccIndex::~OccIndex(){
 unsigned int OccIndex::OccBlock::occInBlock(unsigned char c){
     OccEntry* entry = head;
     while (entry->c != c){
+        if (!entry->next){
+            return 0;
+        }
         entry = entry->next;
     }
     return entry->occ;
@@ -111,7 +114,7 @@ void OccIndex::createOccIndex(std::istream& in){
 }
 
 unsigned int OccIndex::occ(unsigned char c, unsigned int q, std::istream& in){
-    OccBlock* block = getIndexBlock(c, q);
+    OccBlock* block = getIndexBlock(q);
 
     unsigned int occurrences = 0;
     unsigned int i = 0;
@@ -137,7 +140,7 @@ unsigned int OccIndex::occ(unsigned char c, unsigned int q, std::istream& in){
     return occurrences;
 }
 
-OccIndex::OccBlock* OccIndex::getIndexBlock(unsigned char c, unsigned int q){
+OccIndex::OccBlock* OccIndex::getIndexBlock(unsigned int q){
     OccBlock* block = head;
     while (block->position < q){
         if (block->next){
