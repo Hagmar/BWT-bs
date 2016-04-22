@@ -1,6 +1,8 @@
 #ifndef OCCINDEX_H
 #define OCCINDEX_H
 
+#include <fstream>
+
 #define BLOCKSIZE 1000000
 
 class OccIndex {
@@ -37,8 +39,8 @@ class OccIndex {
         OccBlock* head;
         OccBlock* tail;
 
-        void createOccIndex(const char*);
-        OccBlock* getIndexBlock(unsigned char, unsigned int, OccIndex*);
+        void createOccIndex(std::istream&);
+        OccBlock* getIndexBlock(unsigned char, unsigned int);
 
         OccIndex();
         ~OccIndex();

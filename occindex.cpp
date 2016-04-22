@@ -68,8 +68,7 @@ unsigned int OccIndex::OccBlock::occInBlock(unsigned char c){
     return entry->occ;
 }
 
-void OccIndex::createOccIndex(const char* filename){
-    std::ifstream in(filename);
+void OccIndex::createOccIndex(std::istream& in){
     OccBlock* block = head;
     OccBlock::OccEntry* currEntry = NULL;
     unsigned int blockSize = 0;
@@ -109,11 +108,10 @@ void OccIndex::createOccIndex(const char* filename){
 
         blockSize++;
     } 
-    in.close();
 }
 
-OccIndex::OccBlock* getIndexBlock(unsigned char c, unsigned int q, OccIndex* occIndex){
-    OccIndex::OccBlock* block = occIndex->head;
+OccIndex::OccBlock* OccIndex::getIndexBlock(unsigned char c, unsigned int q){
+    OccBlock* block = head;
     while (block->position < q){
         if (block->next){
             if (block->next->position < q){
