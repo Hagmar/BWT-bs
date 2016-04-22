@@ -15,7 +15,7 @@ occindex.o: occindex.cpp occindex.h
 	$(CC) $(CCFLAGS) -c occindex.cpp
 
 ctable.o: ctable.cpp ctable.h occindex.h
-	$(CC) $(CCFLAGS) -c ctable.cpp 
+	$(CC) $(CCFLAGS) -c ctable.cpp
 
 recordindex.o: recordindex.cpp recordindex.h occindex.h ctable.h
 	$(CC) $(CCFLAGS) -c recordindex.cpp
