@@ -28,6 +28,7 @@ class OccIndex {
 
                 OccBlock(unsigned int);
                 OccBlock(unsigned int, OccBlock*);
+                ~OccBlock();
 
                 // Debugging
                 void print();

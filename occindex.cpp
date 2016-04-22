@@ -37,9 +37,27 @@ OccIndex::OccBlock::OccBlock(unsigned int pos, OccBlock* block){
     }
 }
 
+OccIndex::OccBlock::~OccBlock(){
+    OccEntry* entry = head;
+    while (entry){
+        entry = head->next;
+        delete head;
+        head = entry;
+    }
+}
+
 OccIndex::OccIndex(){
     head = new OccBlock(BLOCKSIZE);
     tail = head;
+}
+
+OccIndex::~OccIndex(){
+    OccBlock* block = head;
+    while (block){
+        block = head->next;
+        delete head;
+        head = block;
+    }
 }
 
 unsigned int OccIndex::OccBlock::occInBlock(unsigned char c){
