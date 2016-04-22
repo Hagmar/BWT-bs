@@ -40,6 +40,7 @@ class OccIndex {
         OccBlock* tail;
 
         void createOccIndex(std::istream&);
+        unsigned int occ(unsigned char, unsigned int, std::istream&);
         OccBlock* getIndexBlock(unsigned char, unsigned int);
 
         OccIndex();

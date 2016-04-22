@@ -110,6 +110,33 @@ void OccIndex::createOccIndex(std::istream& in){
     } 
 }
 
+unsigned int OccIndex::occ(unsigned char c, unsigned int q, std::istream& in){
+    OccBlock* block = getIndexBlock(c, q);
+
+    unsigned int occurrences = 0;
+    unsigned int i = 0;
+
+    in.clear();
+    if (block){
+        in.seekg(block->position, in.beg);
+        i = block->position;
+        occurrences = block->occInBlock(c);
+    } else {
+        in.seekg(0, in.beg);
+    }
+
+    char readChar;
+    for (; i <= q; i++){
+        if (!in.get(readChar)){
+            break;
+        }
+        if (c == readChar){
+            occurrences++;
+        }
+    }
+    return occurrences;
+}
+
 OccIndex::OccBlock* OccIndex::getIndexBlock(unsigned char c, unsigned int q){
     OccBlock* block = head;
     while (block->position < q){

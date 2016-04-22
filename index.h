@@ -16,6 +16,9 @@ class Index {
         unsigned int getC(unsigned char);
 
         Index(const char*);
+
+        // Debugging
+        void printAll();
 };
 
 #endif
