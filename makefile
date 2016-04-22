@@ -5,14 +5,22 @@ all: bwtsearch bwtencode
 debug: CCFLAGS += -g3
 debug: clean all
 
-bwtsearch: bwtsearch.cpp bwtsearch.h occindex.o ctable.o
-	$(CC) $(CCFLAGS) -o bwtsearch bwtsearch.cpp occindex.o ctable.o
+bwtsearch: bwtsearch.cpp bwtsearch.h index.o occindex.o ctable.o recordindex.o
+	$(CC) $(CCFLAGS) -o bwtsearch bwtsearch.cpp index.o occindex.o ctable.o recordindex.o
 
-ctable.o: ctable.cpp ctable.h occindex.h
-	$(CC) $(CCFLAGS) -c ctable.cpp
+index.o: index.cpp index.h occindex.h ctable.h recordindex.h
+	$(CC) $(CCFLAGS) -c index.cpp
 
 occindex.o: occindex.cpp occindex.h
 	$(CC) $(CCFLAGS) -c occindex.cpp
+
+ctable.o: ctable.cpp ctable.h occindex.h
+	$(CC) $(CCFLAGS) -c ctable.cpp 
+
+recordindex.o: recordindex.cpp recordindex.h occindex.h ctable.h
+	$(CC) $(CCFLAGS) -c recordindex.cpp
+
+
 
 bwtencode: bwtencode.cpp bwtencode.h bucket.o sdistlist.o
 	$(CC) $(CCFLAGS) -o bwtencode bwtencode.cpp bucket.o sdistlist.o
