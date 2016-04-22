@@ -5,14 +5,23 @@
 #include "occindex.h"
 #include "ctable.h"
 
+// For each entry in the index we need 4 bytes for they key and 4 for the
+// value. This interval needs to be large enough to make sure the index file
+// is small enough.
+#define RECORDINTERVAL 15
+
 class RecordIndex {
     std::map<unsigned int, unsigned int>* index;
 
-    RecordIndex();
-    ~RecordIndex();
+    void createIndex(OccIndex*, CTable*, std::istream&);
 
-    // Debugging
-    void print();
+    public:
+        RecordIndex();
+        RecordIndex(OccIndex*, CTable*, std::istream&);
+        ~RecordIndex();
+
+        // Debugging
+        void print();
 };
 
 #endif
