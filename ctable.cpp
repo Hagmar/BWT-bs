@@ -21,8 +21,15 @@ CTable::CTable(OccIndex* occIndex){
     table[-1] = previous;
 }
 
-unsigned int CTable::getC(unsigned char c){
-    return table[c];
+unsigned int CTable::getC(unsigned char c, bool includeC){
+    if (includeC){
+        std::map<unsigned char, unsigned int>::iterator it;
+        it = table.find(c);
+        it++;
+        return it->second;
+    } else {
+        return table[c];
+    }
 }
 
 // Debugging

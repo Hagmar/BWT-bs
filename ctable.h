@@ -8,7 +8,7 @@ class CTable {
     public:
         std::map<unsigned char, unsigned int> table;
 
-        unsigned int getC(unsigned char);
+        unsigned int getC(unsigned char, bool);
 
         CTable(OccIndex*);
 
