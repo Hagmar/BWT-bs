@@ -1,57 +1,32 @@
 #include <iostream>
+#include <map>
 #include "ctable.h"
 #include "occindex.h"
 
-CTable::CharEntry::CharEntry(unsigned char character, unsigned int value){
-    c = character;
-    v = value;
-    next = NULL;
-}
-
 CTable::CTable(OccIndex* occIndex){
-    OccIndex::OccBlock::OccEntry* entry = occIndex->tail->head;
-    head = NULL;
+    table = std::map<unsigned char, unsigned int>();
 
-    CharEntry* charEntry;
-    unsigned int c;
+    std::map<unsigned char, unsigned int>::iterator it =
+        occIndex->tail->occurrences.begin();
+
     unsigned int previous = 0;
-    while (entry){
-        c = entry->c;
-        if (!head){
-            head = new CharEntry(c, previous);
-            charEntry = head;
-        } else {
-            charEntry->next = new CharEntry(c, previous);
-            charEntry = charEntry->next;
-        }
-        previous += entry->occ;
-        entry = entry->next;
+    for (; it != occIndex->tail->occurrences.end(); it++){
+        table[it->first] = previous;
+        previous += it->second;
     }
+
     // An end-entry for retrieving the C-value of the last character
-    charEntry->next = new CharEntry(0, previous);
+    table[-1] = previous;
 }
 
-// TODO Optimise to be better than O(n)?
 unsigned int CTable::getC(unsigned char c){
-    CharEntry* entry = head;
-    while (entry){
-        if (entry->c >= c || !entry->c){
-            return entry->v;
-        }
-        entry = entry->next;
-    }
-    return 0;
+    return table[c];
 }
 
 // Debugging
-void CTable::CharEntry::print(){
-    std::cout << "Character: " << c << " Previous: " << v << std::endl;
-}
-
 void CTable::print(){
-    CharEntry* entry = head;
-    while (entry){
-        entry->print();
-        entry = entry->next;
+    std::map<unsigned char, unsigned int>::iterator it;
+    for (it = table.begin(); it != table.end(); it++){
+        std::cout << "Character: " << it->first << " Previous: " << it->second << std::endl;
     }
 }
