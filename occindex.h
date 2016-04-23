@@ -2,6 +2,7 @@
 #define OCCINDEX_H
 
 #include <fstream>
+#include <map>
 
 #define BLOCKSIZE 100000
 
@@ -9,22 +10,10 @@ class OccIndex {
     public:
         class OccBlock {
             public:
-                class OccEntry {
-                    public:
-                        unsigned char c;
-                        unsigned int occ;
-                        OccEntry* next;
-
-                        OccEntry(unsigned char);
-                        OccEntry(OccEntry*);
-
-                        // Debugging
-                        void print();
-                };
-
                 unsigned int position;
-                OccEntry* head;
                 OccBlock* next;
+
+                std::map<unsigned char, unsigned int> occurrences;
 
                 unsigned int occInBlock(unsigned char);
 

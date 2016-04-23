@@ -2,48 +2,21 @@
 #include <fstream>
 #include "occindex.h"
 
-OccIndex::OccBlock::OccEntry::OccEntry(unsigned char character){
-    c = character;
-    occ = 0;
-    next = NULL;
-}
-
-OccIndex::OccBlock::OccEntry::OccEntry(OccEntry* entry){
-    c = entry->c;
-    occ = entry->occ;
-    next = NULL;
-}
-
 OccIndex::OccBlock::OccBlock(unsigned int pos){
     position = pos;
-    head = NULL;
     next = NULL;
+    occurrences = std::map<unsigned char, unsigned int>();
 }
 
 OccIndex::OccBlock::OccBlock(unsigned int pos, OccBlock* block){
     position = pos;
     next = NULL;
 
-    OccEntry* entry = block->head;
-    if (entry){
-        head = new OccEntry(entry);
-        entry = entry->next;
-        OccEntry* lastEntry = head;
-        while (entry){
-            lastEntry->next = new OccEntry(entry);
-            lastEntry = lastEntry->next;
-            entry = entry->next;
-        }
-    }
+    occurrences = std::map<unsigned char, unsigned int>(block->occurrences);
 }
 
 OccIndex::OccBlock::~OccBlock(){
-    OccEntry* entry = head;
-    while (entry){
-        entry = head->next;
-        delete head;
-        head = entry;
-    }
+    occurrences.clear();
 }
 
 OccIndex::OccIndex(){
@@ -55,25 +28,18 @@ OccIndex::~OccIndex(){
     OccBlock* block = head;
     while (block){
         block = head->next;
+        head->occurrences.clear();
         delete head;
         head = block;
     }
 }
 
 unsigned int OccIndex::OccBlock::occInBlock(unsigned char c){
-    OccEntry* entry = head;
-    while (entry->c != c){
-        if (!entry->next){
-            return 0;
-        }
-        entry = entry->next;
-    }
-    return entry->occ;
+    return occurrences[c];
 }
 
 void OccIndex::createOccIndex(std::istream& in){
     OccBlock* block = head;
-    OccBlock::OccEntry* currEntry = NULL;
     unsigned int blockSize = 0;
 
     char c;
@@ -83,32 +49,8 @@ void OccIndex::createOccIndex(std::istream& in){
             blockSize = 0;
             block = block->next;
             tail = block;
-            currEntry = block->head;
         }
-
-        if (!currEntry){
-            block->head = new OccBlock::OccEntry(c);
-            currEntry = block->head;
-        } else if (currEntry->c > (unsigned char) c){
-            if (block->head->c > (unsigned char) c){
-                OccBlock::OccEntry* newEntry = new OccBlock::OccEntry(c);
-                newEntry->next = block->head;
-                block->head = newEntry;
-            }
-            currEntry = block->head;
-        }
-        while (currEntry->c != c){
-            if (!currEntry->next){
-                currEntry->next = new OccBlock::OccEntry(c);
-            } else if (currEntry->next->c > (unsigned char) c){
-                OccBlock::OccEntry* newEntry = new OccBlock::OccEntry(c);
-                newEntry->next = currEntry->next;
-                currEntry->next = newEntry;
-            }
-            currEntry = currEntry->next;
-        }
-        currEntry->occ++;
-
+        block->occurrences[c]++;
         blockSize++;
     } 
 }
@@ -162,16 +104,11 @@ OccIndex::OccBlock* OccIndex::getIndexBlock(unsigned int q){
 
 
 // Debugging
-void OccIndex::OccBlock::OccEntry::print(){
-    std::cout << "Character: " << c << " Occurrences: " << occ << std::endl;
-}
-
 void OccIndex::OccBlock::print(){
     std::cout << "Block distance: " << position << std::endl;
-    OccEntry* entry = head;
-    while (entry){
-        entry->print();
-        entry = entry->next;
+    std::map<unsigned char, unsigned int>::iterator it;
+    for (it = occurrences.begin(); it != occurrences.end(); it++){
+        std::cout << "Character: " << it->first << " Occurrences: " << it->second << std::endl;
     }
 }
 
