@@ -6,11 +6,13 @@
 CTable::CTable(OccIndex* occIndex){
     table = std::map<unsigned char, unsigned int>();
 
+    std::map<unsigned char, unsigned int>::iterator itEnd =
+        occIndex->index.rbegin()->second.end();
     std::map<unsigned char, unsigned int>::iterator it =
-        occIndex->tail->occurrences.begin();
+        occIndex->index.rbegin()->second.begin();
 
     unsigned int previous = 0;
-    for (; it != occIndex->tail->occurrences.end(); it++){
+    for (; it != itEnd; it++){
         table[it->first] = previous;
         previous += it->second;
     }
