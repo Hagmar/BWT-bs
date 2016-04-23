@@ -13,7 +13,7 @@ class Index {
 
     public:
         unsigned int occ(unsigned char, unsigned int, std::istream&);
-        unsigned int getC(unsigned char);
+        unsigned int getC(unsigned char, bool);
 
         Index(const char*);
 

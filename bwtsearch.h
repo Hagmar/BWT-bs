@@ -9,8 +9,6 @@ struct searchResult {
     unsigned int last;
 };
 
-OccIndex::OccBlock* getIndexBlock(unsigned char, unsigned int, OccIndex*);
-
 searchResult backwardSearch(const char*, const char*, Index*);
 void interpretResults(searchResult, const char*, const char*, Index*);
 std::set<unsigned int>* findRecords(searchResult, const char*, Index*);
