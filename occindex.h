@@ -4,33 +4,14 @@
 #include <fstream>
 #include <map>
 
-#define BLOCKSIZE 100000
+#define BLOCKSIZE 10000
 
 class OccIndex {
     public:
-        class OccBlock {
-            public:
-                unsigned int position;
-                OccBlock* next;
-
-                std::map<unsigned char, unsigned int> occurrences;
-
-                unsigned int occInBlock(unsigned char);
-
-                OccBlock(unsigned int);
-                OccBlock(unsigned int, OccBlock*);
-                ~OccBlock();
-
-                // Debugging
-                void print();
-        };
-
-        OccBlock* head;
-        OccBlock* tail;
+        std::map<unsigned int, std::map<unsigned char, unsigned int> > index;
 
         void createOccIndex(std::istream&);
         unsigned int occ(unsigned char, unsigned int, std::istream&);
-        OccBlock* getIndexBlock(unsigned int);
 
         OccIndex();
         ~OccIndex();
