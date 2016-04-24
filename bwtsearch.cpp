@@ -15,26 +15,28 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
     result.last = 0;
 
     std::ifstream in(filename);
+    std::ifstream ixIn(index->indexFile);
 
     unsigned int i = std::strlen(pattern) - 1;
     unsigned char c = pattern[i];
-    result.first = index->getC(c, false);
-    result.last = index->getC(c, true) - 1;
+    result.first = index->getC(c);
+    result.last = index->getC(c + 1) - 1;
     unsigned int occurrences;
     while ((result.first <= result.last) && i){
         c = pattern[--i];
         if (result.first){
-            occurrences = index->occ(c, result.first-1, in);
+            occurrences = index->occ(c, result.first-1, in, ixIn);
         } else {
             in.clear();
             in.seekg(0, in.beg);
             occurrences = in.get() == c;
         }
-        result.first = index->getC(c, false) + occurrences;
-        result.last = index->getC(c, false) + index->occ(c, result.last, in) - 1;
+        result.first = index->getC(c) + occurrences;
+        result.last = index->getC(c) + index->occ(c, result.last, in, ixIn) - 1;
     }
 
     in.close();
+    ixIn.close();
     return result;
 }
 
@@ -64,6 +66,8 @@ void interpretResults(searchResult result, const char* mode,
 std::set<unsigned int>* findRecords(searchResult result,
         const char* filename, Index* index){
     std::ifstream in(filename);
+    std::ifstream ixIn(index->indexFile);
+
     unsigned int record;
     unsigned int scale;
     bool reachedOffset;
@@ -76,7 +80,7 @@ std::set<unsigned int>* findRecords(searchResult result,
         scale = 1;
         in.seekg(hit);
         in.get(c);
-        next = index->occ(c, hit, in) + index->getC(c, false) - 1;
+        next = index->occ(c, hit, in, ixIn) + index->getC(c) - 1;
         while (c != '['){
             if (c == ']'){
                 reachedOffset = true;
@@ -86,7 +90,7 @@ std::set<unsigned int>* findRecords(searchResult result,
             }
             in.seekg(next);
             in.get(c);
-            next = index->occ(c, next, in) + index->getC(c, false) - 1;
+            next = index->occ(c, next, in, ixIn) + index->getC(c) - 1;
         }
         records->insert(record);
     }
@@ -102,7 +106,7 @@ int main(int argc, char** argv){
         const char* indexFile = argv[3];
         const char* pattern = argv[4];
 
-        Index* index = new Index(filename);
+        Index* index = new Index(filename, indexFile);
 
         searchResult result = backwardSearch(pattern, filename, index);
 
