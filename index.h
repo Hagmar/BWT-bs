@@ -4,18 +4,18 @@
 #include <fstream>
 #include "occindex.h"
 #include "ctable.h"
-#include "recordindex.h"
 
 class Index {
     OccIndex* occIndex;
     CTable* cTable;
-    RecordIndex* recordIndex;
 
     public:
-        unsigned int occ(unsigned char, unsigned int, std::istream&);
-        unsigned int getC(unsigned char, bool);
+        const char* indexFile;
 
-        Index(const char*);
+        unsigned int occ(unsigned char, unsigned int, std::istream&, std::istream&);
+        unsigned int getC(unsigned char);
+
+        Index(const char*, const char*);
 
         // Debugging
         void printAll();
