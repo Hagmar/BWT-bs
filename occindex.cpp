@@ -20,15 +20,16 @@ void OccIndex::createOccIndex(std::istream& in){
     unsigned int blockSize = 0;
 
     unsigned int blockPos = BLOCKSIZE;
-    std::map<unsigned char, unsigned int>& block = index[BLOCKSIZE];
+    std::map<unsigned char, unsigned int>* block = &index[BLOCKSIZE];
     char c;
     while (in.get(c)){
         if (blockSize >= BLOCKSIZE){
             blockPos += BLOCKSIZE;
-            index[blockPos] = std::map<unsigned char, unsigned int>();
+            index[blockPos] = std::map<unsigned char, unsigned int>(*block);
+            block = &index[blockPos];
             blockSize = 0;
         }
-        block[c]++;
+        (*block)[c]++;
         blockSize++;
     } 
 }
