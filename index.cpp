@@ -1,8 +1,8 @@
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include "index.h"
 #include "occindex.h"
-#include "ctable.h"
 
 Index::Index(const char* filename, const char* indexFileName){
     indexFile = indexFileName;
@@ -14,7 +14,7 @@ Index::Index(const char* filename, const char* indexFileName){
 
     std::ifstream ixIn(indexFile);
 
-    cTable = new CTable(ixIn);
+    generateCTable(ixIn);
     std::cout << "C-table complete" << std::endl;
 }
 
@@ -23,12 +23,27 @@ unsigned int Index::occ(unsigned char c, unsigned int q, std::istream& in, std::
 }
 
 unsigned int Index::getC(unsigned char c){
-    return cTable->getC(c);
+    return cTable[c];
+}
+
+void Index::generateCTable(std::istream& ixIn){
+    std::memset(cTable, 0, sizeof(cTable));
+
+    ixIn.seekg(-BLOCKSIZE, ixIn.end);
+    unsigned int previous = 0;
+    unsigned int occurrences = 0;
+    for (int i = 0; i < 256; i++){
+        cTable[i] = previous;
+        ixIn.read((char*) &occurrences, sizeof(unsigned int));
+        previous += occurrences;
+    }
 }
 
 // Debugging
-void Index::printAll(){
+void Index::print(){
     occIndex->print();
     std::cout << std::endl;
-    cTable->print();
+    for (int i = 0; i < 256; i++){
+        std::cout << "Character: " << cTable[i] << std::endl;
+    }
 }
