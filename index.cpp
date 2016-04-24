@@ -2,14 +2,12 @@
 #include <iostream>
 #include <cstring>
 #include "index.h"
-#include "occindex.h"
 
 Index::Index(const char* filename, const char* indexFileName){
     indexFile = indexFileName;
     std::ifstream in(filename);
 
-    occIndex = new OccIndex();
-    occIndex->createOccIndex(in, indexFile);
+    createOccIndex(in);
     std::cout << "Occerence index complete" << std::endl;
 
     std::ifstream ixIn(indexFile);
@@ -18,12 +16,30 @@ Index::Index(const char* filename, const char* indexFileName){
     std::cout << "C-table complete" << std::endl;
 }
 
-unsigned int Index::occ(unsigned char c, unsigned int q, std::istream& in, std::istream& ixIn){
-    return occIndex->occ(c, q, in, ixIn);
-}
-
 unsigned int Index::getC(unsigned char c){
     return cTable[c];
+}
+
+void Index::createOccIndex(std::istream& in){
+    unsigned int indexArray[256] = {0};
+    unsigned int blockSize = 0;
+    std::ofstream out(indexFile, std::ofstream::trunc | std::ofstream::binary);
+
+    char c;
+    while (in.get(c)){
+        indexArray[(unsigned char) c]++;
+        if (blockSize >= BLOCKSIZE){
+            writeBlockToIndex(indexArray, out);
+            blockSize = 0;
+        }
+        blockSize++;
+    } 
+    writeBlockToIndex(indexArray, out);
+    out.close();
+}
+
+void Index::writeBlockToIndex(unsigned int indexArray[256], std::ofstream& out){
+    out.write((char*) indexArray, 256 * sizeof(unsigned int));
 }
 
 void Index::generateCTable(std::istream& ixIn){
@@ -39,9 +55,35 @@ void Index::generateCTable(std::istream& ixIn){
     }
 }
 
+unsigned int Index::occ(unsigned char c, unsigned int q, std::istream& in, std::istream& ixIn){
+    unsigned int blockOffset = q / BLOCKSIZE;
+
+    unsigned int occurrences = 0;
+    unsigned int i = 0;
+
+    if (blockOffset){
+        ixIn.seekg((blockOffset-1) * BLOCKSIZE + (c * sizeof(unsigned int)));
+        ixIn.read((char*) &occurrences, sizeof(unsigned int));
+        i = blockOffset * BLOCKSIZE;
+        in.seekg(i);
+    } else {
+        in.seekg(0);
+    }
+
+    char readChar;
+    for (; i <= q; i++){
+        if (!in.get(readChar)){
+            break;
+        }
+        if (c == readChar){
+            occurrences++;
+        }
+    }
+    return occurrences;
+}
+
 // Debugging
 void Index::print(){
-    occIndex->print();
     std::cout << std::endl;
     for (int i = 0; i < 256; i++){
         std::cout << "Character: " << cTable[i] << std::endl;

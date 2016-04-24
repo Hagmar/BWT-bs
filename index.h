@@ -2,11 +2,10 @@
 #define INDEX_H
 
 #include <fstream>
-#include "occindex.h"
-#include "ctable.h"
+
+#define BLOCKSIZE 1024
 
 class Index {
-    OccIndex* occIndex;
     unsigned int cTable[256];
 
     public:
@@ -14,6 +13,8 @@ class Index {
 
         unsigned int occ(unsigned char, unsigned int, std::istream&, std::istream&);
         unsigned int getC(unsigned char);
+        void createOccIndex(std::istream&);
+        void writeBlockToIndex(unsigned int[256], std::ofstream&);
         void generateCTable(std::istream&);
 
         Index(const char*, const char*);
