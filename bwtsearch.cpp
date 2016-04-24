@@ -20,7 +20,7 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
     unsigned char c = pattern[i];
     result.first = index->getC(c, false);
     result.last = index->getC(c, true) - 1;
-    unsigned char occurrences;
+    unsigned int occurrences;
     while ((result.first <= result.last) && i){
         c = pattern[--i];
         if (result.first){
