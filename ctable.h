@@ -6,11 +6,11 @@
 
 class CTable {
     public:
-        std::map<unsigned char, unsigned int> table;
+        unsigned int table[256];
 
-        unsigned int getC(unsigned char, bool);
+        unsigned int getC(unsigned char);
 
-        CTable(OccIndex*);
+        CTable(std::istream&);
 
         // Debugging
         void print();

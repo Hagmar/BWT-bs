@@ -1,41 +1,30 @@
 #include <iostream>
+#include <fstream>
 #include <map>
+#include <cstring>
 #include "ctable.h"
 #include "occindex.h"
 
-CTable::CTable(OccIndex* occIndex){
-    table = std::map<unsigned char, unsigned int>();
+CTable::CTable(std::istream& ixIn){
+    std::memset(table, 0, sizeof(table));
 
-    std::map<unsigned char, unsigned int>::iterator itEnd =
-        occIndex->index.rbegin()->second.end();
-    std::map<unsigned char, unsigned int>::iterator it =
-        occIndex->index.rbegin()->second.begin();
-
+    ixIn.seekg(-BLOCKSIZE, ixIn.end);
     unsigned int previous = 0;
-    for (; it != itEnd; it++){
-        table[it->first] = previous;
-        previous += it->second;
+    unsigned int occurrences = 0;
+    for (int i = 0; i < 256; i++){
+        table[i] = previous;
+        ixIn.read((char*) &occurrences, sizeof(unsigned int));
+        previous += occurrences;
     }
-
-    // An end-entry for retrieving the C-value of the last character
-    table[-1] = previous;
 }
 
-unsigned int CTable::getC(unsigned char c, bool includeC){
-    if (includeC){
-        std::map<unsigned char, unsigned int>::iterator it;
-        it = table.find(c);
-        it++;
-        return it->second;
-    } else {
-        return table[c];
-    }
+unsigned int CTable::getC(unsigned char c){
+    return table[c];
 }
 
 // Debugging
 void CTable::print(){
-    std::map<unsigned char, unsigned int>::iterator it;
-    for (it = table.begin(); it != table.end(); it++){
-        std::cout << "Character: " << it->first << " Previous: " << it->second << std::endl;
+    for (int i = 0; i < 256; i++){
+        std::cout << "Character: " << table[i] << std::endl;
     }
 }
