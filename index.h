@@ -3,9 +3,11 @@
 
 #include <fstream>
 
-#define BLOCKCAPACITY 2
 #define BLOCKELEMENTS 128
 #define BLOCKSIZE BLOCKELEMENTS * sizeof(unsigned int)
+// If block capacity is the same as block size then index will be at most as
+// big as the original file
+#define BLOCKCAPACITY BLOCKSIZE
 
 class Index {
     unsigned int cTable[BLOCKELEMENTS];
