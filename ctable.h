@@ -6,7 +6,7 @@
 
 class CTable {
     public:
-        unsigned int table[256];
+        unsigned int table[128];
 
         unsigned int getC(unsigned char);
 

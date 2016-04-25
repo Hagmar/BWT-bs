@@ -3,7 +3,7 @@
 #include "occindex.h"
 
 void OccIndex::createOccIndex(std::istream& in, const char* indexFile){
-    unsigned int indexArray[256] = {0};
+    unsigned int indexArray[128] = {0};
     unsigned int blockSize = 0;
     std::ofstream out(indexFile, std::ofstream::trunc | std::ofstream::binary);
 
@@ -19,8 +19,8 @@ void OccIndex::createOccIndex(std::istream& in, const char* indexFile){
     writeBlockToIndex(indexArray, out);
 }
 
-void OccIndex::writeBlockToIndex(unsigned int indexArray[256], std::ofstream& out){
-    out.write((char*) indexArray, 256*sizeof(unsigned int));
+void OccIndex::writeBlockToIndex(unsigned int indexArray[128], std::ofstream& out){
+    out.write((char*) indexArray, 128*sizeof(unsigned int));
 }
 
 unsigned int OccIndex::occ(unsigned char c, unsigned int q, std::istream& in, std::istream& ixIn){

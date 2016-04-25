@@ -21,7 +21,7 @@ unsigned int Index::getC(unsigned char c){
 }
 
 void Index::createOccIndex(std::istream& in){
-    unsigned int indexArray[256] = {0};
+    unsigned int indexArray[128] = {0};
     unsigned int blockSize = 0;
     std::ofstream out(indexFile, std::ofstream::trunc | std::ofstream::binary);
 
@@ -34,12 +34,14 @@ void Index::createOccIndex(std::istream& in){
         }
         blockSize++;
     } 
+    // TODO
+    // What happens when block isn't complete?
     writeBlockToIndex(indexArray, out);
     out.close();
 }
 
-void Index::writeBlockToIndex(unsigned int indexArray[256], std::ofstream& out){
-    out.write((char*) indexArray, 256 * sizeof(unsigned int));
+void Index::writeBlockToIndex(unsigned int indexArray[128], std::ofstream& out){
+    out.write((char*) indexArray, 128 * sizeof(unsigned int));
 }
 
 void Index::generateCTable(std::istream& ixIn){
@@ -48,7 +50,7 @@ void Index::generateCTable(std::istream& ixIn){
     ixIn.seekg(-BLOCKSIZE, ixIn.end);
     unsigned int previous = 0;
     unsigned int occurrences = 0;
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < 128; i++){
         cTable[i] = previous;
         ixIn.read((char*) &occurrences, sizeof(unsigned int));
         previous += occurrences;
@@ -85,7 +87,7 @@ unsigned int Index::occ(unsigned char c, unsigned int q, std::istream& in, std::
 // Debugging
 void Index::print(){
     std::cout << std::endl;
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < 128; i++){
         std::cout << "Character: " << cTable[i] << std::endl;
     }
 }

@@ -11,7 +11,7 @@ CTable::CTable(std::istream& ixIn){
     ixIn.seekg(-BLOCKSIZE, ixIn.end);
     unsigned int previous = 0;
     unsigned int occurrences = 0;
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < 128; i++){
         table[i] = previous;
         ixIn.read((char*) &occurrences, sizeof(unsigned int));
         previous += occurrences;
@@ -24,7 +24,7 @@ unsigned int CTable::getC(unsigned char c){
 
 // Debugging
 void CTable::print(){
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < 128; i++){
         std::cout << "Character: " << table[i] << std::endl;
     }
 }
