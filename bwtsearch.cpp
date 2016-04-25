@@ -4,8 +4,6 @@
 #include <set>
 #include "bwtsearch.h"
 #include "index.h"
-#include "occindex.h"
-#include "ctable.h"
 
 
 // TODO Segfaults on empty pattern
@@ -27,7 +25,6 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
         if (result.first){
             occurrences = index->occ(c, result.first-1, in, ixIn);
         } else {
-            in.clear();
             in.seekg(0, in.beg);
             occurrences = in.get() == c;
         }

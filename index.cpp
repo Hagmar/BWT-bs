@@ -8,12 +8,10 @@ Index::Index(const char* filename, const char* indexFileName){
     std::ifstream in(filename);
 
     unsigned int blocksWritten = createOccIndex(in);
-    std::cout << "Occerence index complete" << std::endl;
 
     std::ifstream ixIn(indexFile);
 
     generateCTable(blocksWritten, ixIn, in);
-    std::cout << "C-table complete" << std::endl;
 }
 
 unsigned int Index::getC(unsigned char c){
