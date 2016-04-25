@@ -7,12 +7,12 @@ Index::Index(const char* filename, const char* indexFileName){
     indexFile = indexFileName;
     std::ifstream in(filename);
 
-    createOccIndex(in);
+    unsigned int blocksWritten = createOccIndex(in);
     std::cout << "Occerence index complete" << std::endl;
 
     std::ifstream ixIn(indexFile);
 
-    generateCTable(ixIn);
+    generateCTable(blocksWritten, ixIn, in);
     std::cout << "C-table complete" << std::endl;
 }
 
@@ -20,9 +20,10 @@ unsigned int Index::getC(unsigned char c){
     return cTable[c];
 }
 
-void Index::createOccIndex(std::istream& in){
+unsigned int Index::createOccIndex(std::istream& in){
     unsigned int indexArray[128] = {0};
     unsigned int blockSize = 0;
+    unsigned int blocksWritten = 0;
     std::ofstream out(indexFile, std::ofstream::trunc | std::ofstream::binary);
 
     char c;
@@ -31,29 +32,40 @@ void Index::createOccIndex(std::istream& in){
         if (blockSize >= BLOCKSIZE){
             writeBlockToIndex(indexArray, out);
             blockSize = 0;
+            blocksWritten++;
         }
         blockSize++;
     } 
-    // TODO
-    // What happens when block isn't complete?
-    writeBlockToIndex(indexArray, out);
+    in.clear();
     out.close();
+    return blocksWritten;
 }
 
 void Index::writeBlockToIndex(unsigned int indexArray[128], std::ofstream& out){
     out.write((char*) indexArray, 128 * sizeof(unsigned int));
 }
 
-void Index::generateCTable(std::istream& ixIn){
+void Index::generateCTable(unsigned int blocksWritten, std::istream& ixIn,
+        std::istream& in){
     std::memset(cTable, 0, sizeof(cTable));
 
-    ixIn.seekg(-BLOCKSIZE, ixIn.end);
-    unsigned int previous = 0;
     unsigned int occurrences = 0;
-    for (int i = 0; i < 128; i++){
-        cTable[i] = previous;
-        ixIn.read((char*) &occurrences, sizeof(unsigned int));
-        previous += occurrences;
+    if (blocksWritten){
+        ixIn.seekg(-BLOCKSIZE, ixIn.end);
+        for (int i = 0; i < 128 - 1; i++){
+            ixIn.read((char*) &occurrences, sizeof(unsigned int));
+            cTable[i+1] = occurrences;
+        }
+    }
+
+    in.seekg(blocksWritten * BLOCKSIZE, in.beg);
+    char c;
+    while (in.get(c)){
+        cTable[((unsigned char) c)+1]++;
+    }
+
+    for (int i = 1; i < 128; i++){
+        cTable[i] += cTable[i-1];
     }
 }
 

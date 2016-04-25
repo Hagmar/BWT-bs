@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#define BLOCKSIZE 1024
+#define BLOCKSIZE 512
 
 class Index {
     unsigned int cTable[128];
@@ -13,9 +13,9 @@ class Index {
 
         unsigned int occ(unsigned char, unsigned int, std::istream&, std::istream&);
         unsigned int getC(unsigned char);
-        void createOccIndex(std::istream&);
+        unsigned int createOccIndex(std::istream&);
         void writeBlockToIndex(unsigned int[128], std::ofstream&);
-        void generateCTable(std::istream&);
+        void generateCTable(unsigned int, std::istream&, std::istream&);
 
         Index(const char*, const char*);
 
