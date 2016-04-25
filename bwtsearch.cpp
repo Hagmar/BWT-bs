@@ -22,12 +22,7 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
     unsigned int occurrences;
     while ((result.first <= result.last) && i){
         c = pattern[--i];
-        if (result.first){
-            occurrences = index->occ(c, result.first-1, in, ixIn);
-        } else {
-            in.seekg(0, in.beg);
-            occurrences = in.get() == c;
-        }
+        occurrences = index->occ(c, result.first, in, ixIn);
         result.first = index->getC(c) + occurrences;
         result.last = index->getC(c) + index->occ(c, result.last, in, ixIn) - 1;
     }
@@ -75,9 +70,9 @@ std::set<unsigned int>* findRecords(searchResult result,
         reachedOffset = false;
         record = 0;
         scale = 1;
-        in.seekg(hit);
+        in.seekg(hit, in.beg);
         in.get(c);
-        next = index->occ(c, hit, in, ixIn) + index->getC(c) - 1;
+        next = index->occ(c, hit, in, ixIn) + index->getC(c);
         while (c != '['){
             if (c == ']'){
                 reachedOffset = true;
@@ -85,9 +80,9 @@ std::set<unsigned int>* findRecords(searchResult result,
                 record += (c-'0') * scale;
                 scale *= 10;
             }
-            in.seekg(next);
+            in.seekg(next, in.beg);
             in.get(c);
-            next = index->occ(c, next, in, ixIn) + index->getC(c) - 1;
+            next = index->occ(c, next, in, ixIn) + index->getC(c);
         }
         records->insert(record);
     }
