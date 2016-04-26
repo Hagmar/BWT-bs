@@ -13,7 +13,7 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
     result.last = 0;
 
     std::ifstream in(filename);
-    std::ifstream ixIn(index->indexFile);
+    std::ifstream ixIn(index->indexFile, std::ifstream::binary);
 
     unsigned int i = std::strlen(pattern) - 1;
     unsigned char c = pattern[i];

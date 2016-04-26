@@ -9,7 +9,7 @@ Index::Index(const char* filename, const char* indexFileName){
 
     unsigned int blocksWritten = createOccIndex(in);
 
-    std::ifstream ixIn(indexFile);
+    std::ifstream ixIn(indexFile, std::ifstream::binary);
 
     generateCTable(blocksWritten, ixIn, in);
 }
