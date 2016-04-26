@@ -4,7 +4,7 @@
 #include <fstream>
 
 #define BLOCKELEMENTS 128
-#define BLOCKSIZE BLOCKELEMENTS * sizeof(unsigned int)
+#define BLOCKSIZE (BLOCKELEMENTS * sizeof(unsigned int))
 // If block capacity is the same as block size then index will be at most as
 // big as the original file
 #define BLOCKCAPACITY BLOCKSIZE
