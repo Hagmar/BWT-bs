@@ -24,7 +24,7 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
         c = pattern[--i];
         occurrences = index->occ(c, result.first, in, ixIn);
         result.first = index->getC(c) + occurrences;
-        result.last = index->getC(c) + index->occ(c, result.last, in, ixIn) - 1;
+        result.last = index->getC(c) + index->occ(c, result.last+1, in, ixIn) - 1;
     }
 
     in.close();
