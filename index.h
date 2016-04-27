@@ -3,14 +3,18 @@
 
 #include <fstream>
 
-#define BLOCKELEMENTS 128
-#define BLOCKSIZE (BLOCKELEMENTS * sizeof(unsigned int))
+#define BLOCKELEMENTS 99
+#define BLOCKSIZE (99 * sizeof(unsigned int))
 // If block capacity is the same as block size then index will be at most as
 // big as the original file
 #define BLOCKCAPACITY BLOCKSIZE
 
 class Index {
-    unsigned int cTable[BLOCKELEMENTS];
+    private:
+        unsigned int cTable[BLOCKELEMENTS];
+        unsigned char charMap[128];
+
+        void initializeCharMap();
 
     public:
         const char* indexFile;

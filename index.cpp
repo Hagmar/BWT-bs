@@ -8,6 +8,8 @@ Index::Index(const char* filename, const char* indexFileName){
     std::ifstream in(filename);
     std::ifstream ixIn(indexFile, std::ifstream::binary);
 
+    initializeCharMap();
+
     unsigned int blocksWritten;
     if (!ixIn.good()){
         ixIn.close();
@@ -21,8 +23,18 @@ Index::Index(const char* filename, const char* indexFileName){
     generateCTable(blocksWritten, ixIn, in);
 }
 
+void Index::initializeCharMap(){
+    // Tab, newline and carriage return
+    charMap[9] = 0;
+    charMap[10] = 1;
+    charMap[13] = 2;
+    for (unsigned char i = 3; i < BLOCKELEMENTS; i++){
+        charMap[i+29] = i;
+    }
+}
+
 unsigned int Index::getC(unsigned char c){
-    return cTable[c];
+    return cTable[ charMap[c] ];
 }
 
 unsigned int Index::createOccIndex(std::istream& in){
@@ -32,8 +44,10 @@ unsigned int Index::createOccIndex(std::istream& in){
     std::ofstream out(indexFile, std::ofstream::trunc | std::ofstream::binary);
 
     char c;
+    unsigned char charIndex;
     while (in.get(c)){
-        indexArray[(unsigned char) c]++;
+        charIndex = charMap[c];
+        indexArray[charIndex]++;
         blockSize++;
         if (blockSize >= BLOCKCAPACITY){
             writeBlockToIndex(indexArray, out);
@@ -66,7 +80,7 @@ void Index::generateCTable(unsigned int blocksWritten, std::istream& ixIn,
     in.seekg(blocksWritten * BLOCKSIZE, in.beg);
     char c;
     while (in.get(c)){
-        cTable[((unsigned char) c)+1]++;
+        cTable[ charMap[c] + 1]++;
     }
 
     for (int i = 1; i < BLOCKELEMENTS; i++){
@@ -77,11 +91,12 @@ void Index::generateCTable(unsigned int blocksWritten, std::istream& ixIn,
 unsigned int Index::occ(unsigned char c, unsigned int q, std::istream& in, std::istream& ixIn){
     unsigned int blockOffset = q / BLOCKCAPACITY;
 
+    unsigned char charIndex = charMap[c];
     unsigned int occurrences = 0;
     unsigned int i = 0;
 
     if (blockOffset){
-        ixIn.seekg((blockOffset-1) * BLOCKSIZE + (c * sizeof(unsigned int)), ixIn.beg);
+        ixIn.seekg((blockOffset-1) * BLOCKSIZE + (charIndex * sizeof(unsigned int)), ixIn.beg);
         ixIn.read((char*) &occurrences, sizeof(unsigned int));
         in.seekg(blockOffset * BLOCKCAPACITY, in.beg);
         i = blockOffset * BLOCKCAPACITY;
