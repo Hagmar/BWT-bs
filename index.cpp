@@ -49,7 +49,7 @@ void Index::generateCTable(unsigned int blocksWritten, std::istream& ixIn,
 
     unsigned int occurrences = 0;
     if (blocksWritten){
-        ixIn.seekg(-BLOCKSIZE, ixIn.end);
+        ixIn.seekg((blocksWritten - 1) * BLOCKSIZE, ixIn.beg);
         for (int i = 0; i < BLOCKELEMENTS - 1; i++){
             ixIn.read((char*) &occurrences, sizeof(unsigned int));
             cTable[i+1] = occurrences;
