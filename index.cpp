@@ -6,10 +6,17 @@
 Index::Index(const char* filename, const char* indexFileName){
     indexFile = indexFileName;
     std::ifstream in(filename);
-
-    unsigned int blocksWritten = createOccIndex(in);
-
     std::ifstream ixIn(indexFile, std::ifstream::binary);
+
+    unsigned int blocksWritten;
+    if (!ixIn.good()){
+        ixIn.close();
+        blocksWritten = createOccIndex(in);
+        ixIn.open(indexFile, std::ifstream::binary);
+    } else {
+        ixIn.seekg(0, ixIn.end);
+        blocksWritten = ixIn.tellg() / (BLOCKSIZE);
+    }
 
     generateCTable(blocksWritten, ixIn, in);
 }
