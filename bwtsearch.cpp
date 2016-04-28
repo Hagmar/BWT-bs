@@ -6,6 +6,8 @@
 #include "index.h"
 
 
+// Performs BWT backward search for a pattern in the specified file, using a
+// provided index
 searchResult backwardSearch(const char* pattern, const char* filename, Index* index){
     searchResult result;
     result.first = 0;
@@ -31,6 +33,8 @@ searchResult backwardSearch(const char* pattern, const char* filename, Index* in
     return result;
 }
 
+// Interprets the results and prints output corresponding to the type of search
+// performed
 void interpretResults(searchResult result, const char* mode,
         const char* filename, Index* index){
     if (!std::strcmp(mode, "-n")){
@@ -54,6 +58,7 @@ void interpretResults(searchResult result, const char* mode,
     }
 }
 
+// Uses BWT decoding to determine which records the search results belong to
 std::set<unsigned int>* findRecords(searchResult result,
         const char* filename, Index* index){
     std::ifstream in(filename);
@@ -72,7 +77,10 @@ std::set<unsigned int>* findRecords(searchResult result,
         in.seekg(hit, in.beg);
         in.get(c);
         next = index->occ(c, hit, in, ixIn) + index->getC(c);
+        // Step backward until the '[' character denones the end of the offset
+        // mark
         while (c != '['){
+            // Once we reach ']', the next characters are the record number
             if (c == ']'){
                 reachedOffset = true;
             } else if (reachedOffset){

@@ -3,12 +3,11 @@
 
 #include <fstream>
 
+// There are only 98 possible characters in the record files
 #define BLOCKELEMENTS 98
 #define BLOCKSIZE (BLOCKELEMENTS * sizeof(unsigned int))
-// If block capacity is the same as block size then index will be at most as
-// big as the original file
-#define BLOCKCAPACITY BLOCKSIZE
 
+// Manages the index used to speed up the search
 class Index {
     private:
         unsigned int cTable[BLOCKELEMENTS+1];
