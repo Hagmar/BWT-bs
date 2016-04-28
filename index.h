@@ -26,9 +26,6 @@ class Index {
         void generateCTable(unsigned int, std::istream&, std::istream&);
 
         Index(const char*, const char*);
-
-        // Debugging
-        void print();
 };
 
 #endif

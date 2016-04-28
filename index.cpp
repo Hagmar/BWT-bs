@@ -120,11 +120,3 @@ unsigned int Index::occ(unsigned char c, unsigned int q, std::istream& in, std::
     }
     return occurrences;
 }
-
-// Debugging
-void Index::print(){
-    std::cout << std::endl;
-    for (int i = 0; i < BLOCKELEMENTS; i++){
-        std::cout << "Character: " << cTable[i] << std::endl;
-    }
-}

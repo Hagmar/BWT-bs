@@ -6,7 +6,6 @@
 #include "index.h"
 
 
-// TODO Segfaults on empty pattern
 searchResult backwardSearch(const char* pattern, const char* filename, Index* index){
     searchResult result;
     result.first = 0;
