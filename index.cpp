@@ -31,6 +31,13 @@ void Index::initializeCharMap(){
     for (unsigned char i = 3; i <= BLOCKELEMENTS; i++){
         charMap[i+29] = i;
     }
+
+    // Dummy entries to make lookup of C[c+1] possible
+    charMap[11] = 2;
+    charMap[12] = 2;
+    for (unsigned char i = 14; i < 32; i++){
+        charMap[i] = 3;
+    }
 }
 
 unsigned int Index::getC(unsigned char c){
