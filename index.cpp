@@ -28,7 +28,7 @@ void Index::initializeCharMap(){
     charMap[9] = 0;
     charMap[10] = 1;
     charMap[13] = 2;
-    for (unsigned char i = 3; i < BLOCKELEMENTS; i++){
+    for (unsigned char i = 3; i <= BLOCKELEMENTS; i++){
         charMap[i+29] = i;
     }
 }
@@ -81,7 +81,7 @@ void Index::generateCTable(unsigned int blocksWritten, std::istream& ixIn,
         cTable[ charMap[c] + 1]++;
     }
 
-    for (int i = 1; i < BLOCKELEMENTS; i++){
+    for (int i = 1; i <= BLOCKELEMENTS; i++){
         cTable[i] += cTable[i-1];
     }
 }
