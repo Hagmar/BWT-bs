@@ -1,3 +1,4 @@
+//TODO
 #ifndef BWTENCODE_H
 #define BWTENCODE_H
 
