@@ -53,21 +53,23 @@ unsigned int Index::getC(unsigned char c){
 // Scans the input file and generates an index file for it
 unsigned int Index::createOccIndex(std::istream& in){
     unsigned int indexArray[BLOCKELEMENTS] = {0};
-    unsigned int blockSize = 0;
     unsigned int blocksWritten = 0;
     std::ofstream out(indexFile, std::ofstream::trunc | std::ofstream::binary);
 
-    char c;
     unsigned char charIndex;
-    while (in.get(c)){
-        charIndex = charMap[c];
-        indexArray[charIndex]++;
-        blockSize++;
-        // Once enough characters have been read, write the block to the index
-        if (blockSize >= BLOCKSIZE){
+    char fileBuffer[BLOCKSIZE];
+    while (true){
+        in.read(fileBuffer, BLOCKSIZE);
+        if (in.gcount() == BLOCKSIZE){
+            for (int i = 0; i < BLOCKSIZE; i++){
+                charIndex = charMap[fileBuffer[i]];
+                indexArray[charIndex]++;
+            }
+            // Once enough characters have been read, write the block to the index
             writeBlockToIndex(indexArray, out);
-            blockSize = 0;
             blocksWritten++;
+        } else {
+            break;
         }
     } 
     in.clear();
